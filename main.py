@@ -33,9 +33,9 @@ def add_group(update: Update, context: CallbackContext) -> None:
             response = vision_client.label_detection(image=image)
             annotations = response.label_annotations
             labels = set([label.description.lower() for label in annotations])
-            result = next((welcome[key] for key in labels if key in welcome), None)
+            message = next((welcome[key] for key in labels if key in welcome), None)
             if result:
-                update.message.reply_text(result)
+                update.message.reply_text(message)
                 break
 
 
