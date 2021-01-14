@@ -16,8 +16,8 @@ app = Flask(__name__)
 vision_client = vision.ImageAnnotatorClient()
 
 
-with open("memes.yaml") as f:
-    memes = yaml.load(f, Loader=yaml.FullLoader)
+with open("welcome.yaml") as f:
+    welcome = yaml.load(f, Loader=yaml.FullLoader)
 
 
 def memify(update: Update, context: CallbackContext) -> None:
@@ -29,14 +29,14 @@ def add_group(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         photos = member.get_profile_photos().photos
         for photo in photos:
-            photo_file = context.bot.getFile(photo[-1].file_id)
-            buffer = photo_file.download_as_bytearray()
+            buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
             image = vision.Image(content=bytes(buffer))
             response = vision_client.label_detection(image=image)
             annotations = response.label_annotations
             labels = set([label.description.lower() for label in annotations])
-            if "anime" in labels:
-                update.message.reply_text("Um otaku entrou no grupo!")
+            result = next((welcome[key] for key in labels if key in welcome), None)
+            if result:
+                update.message.reply_text(result)
                 break
 
 
