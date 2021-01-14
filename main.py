@@ -21,7 +21,6 @@ with open("welcome.yaml") as f:
 
 
 def memify(update: Update, context: CallbackContext) -> None:
-    # update.message.reply_text(update.message.text)
     pass
 
 
