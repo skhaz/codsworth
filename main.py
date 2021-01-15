@@ -1,5 +1,6 @@
 import os
 import http
+import random
 
 import yaml
 
@@ -20,6 +21,7 @@ with open("memes.yaml") as f:
     memes = yaml.load(f, Loader=yaml.FullLoader)
 
 welcome = memes["welcome"]
+slaps = memes["slaps"]
 
 
 def memify(update: Update, context: CallbackContext) -> None:
@@ -45,14 +47,21 @@ def on_leave(update: Update, context: CallbackContext) -> None:
     pass
 
 
+def slap(update: Update, context: CallbackContext) -> None:
+    message = update.message.reply_to_message
+    if message:
+        message.reply_text(random.choice(slaps))
+
+
 bot = Bot(token=os.environ["TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None, workers=0)
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, memify))
 dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, on_enter))
 dispatcher.add_handler(MessageHandler(Filters.status_update.left_chat_member, on_leave))
+dispatcher.add_handler(CommandHandler("slap", slap))
 
- 
+
 @app.route("/", methods=["POST"])
 def index() -> Response:
     dispatcher.process_update(
