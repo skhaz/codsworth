@@ -16,8 +16,8 @@ app = Flask(__name__)
 vision_client = vision.ImageAnnotatorClient()
 
 
-with open("welcome.yaml") as f:
-    welcome = yaml.load(f, Loader=yaml.FullLoader)
+with open("memes.yaml") as f:
+    memes = yaml.load(f, Loader=yaml.FullLoader)
 
 
 def memify(update: Update, context: CallbackContext) -> None:
@@ -25,6 +25,7 @@ def memify(update: Update, context: CallbackContext) -> None:
 
 
 def add_group(update: Update, context: CallbackContext) -> None:
+    welcome = memes["welcome"]
     for member in update.message.new_chat_members:
         photos = member.get_profile_photos().photos
         for photo in photos:
