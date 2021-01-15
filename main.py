@@ -21,13 +21,19 @@ with open("memes.yaml") as f:
     memes = yaml.load(f, Loader=yaml.FullLoader)
 
 fortunes = memes["fortunes"]
-memes = memes["memes"]
+replies = memes["replies"]
 slaps = memes["slaps"]
 welcome = memes["welcome"]
 
 
 def memify(update: Update, context: CallbackContext) -> None:
-    pass
+    text = update.message.text
+    if text:
+        labels = text.lower().split()
+        reply = next((replies[key] for key in labels if key in replies), None)
+        if reply:
+            if random.random() < 0.2:
+                update.message.reply_text(reply)
 
 
 def on_enter(update: Update, context: CallbackContext) -> None:

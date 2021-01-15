@@ -1,12 +1,14 @@
 fortunes:
-  - Dedo no cu e gritaria
+  - "Dedo no cu e gritaria"
 
-memes:
-  key: value
+replies:
+  boost: "Did you mean: boosta?"
+  python: "sssssss..."
 
 slaps:
-  - Minha mão na sua cara
+  - "Minha mão na sua cara"
+  - "Sua cara na minha mão"
 
 welcome:
-  anime: Um otaku entrou no grupo!
-  cartoon: Sinto cheiro de otaku...
+  anime: "Um otaku entrou no grupo!"
+  cartoon: "Sinto cheiro de otaku..."
