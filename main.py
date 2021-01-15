@@ -8,7 +8,7 @@ from flask import Flask, request
 from werkzeug.wrappers import Response
 
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, Filters, MessageHandler, CallbackContext
+from telegram.ext import Dispatcher, Filters, CommandHandler, MessageHandler, CallbackContext
 
 from google.cloud import vision
 
