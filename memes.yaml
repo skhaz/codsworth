@@ -2,8 +2,13 @@ fortunes:
   - "Dedo no cu e gritaria"
 
 replies:
-  boost: "Did you mean: boosta?"
-  python: "sssssss..."
+  boost:
+    - "Did you mean: boosta?"
+  python:
+    - "sssssss..."
+  awk:
+    - "Eu faço minhas finanças pessoais usando o AWK!"
+    - "Oi, meu nome é @colemaker, tenho 20 anos e já escrevi um script para AWK de 300 linhas"
 
 slaps:
   - "Minha mão na sua cara"

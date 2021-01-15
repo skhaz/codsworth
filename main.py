@@ -29,11 +29,11 @@ welcome = memes["welcome"]
 def memify(update: Update, context: CallbackContext) -> None:
     text = update.message.text
     if text:
-        labels = text.lower().split()
-        reply = next((replies[key] for key in labels if key in replies), None)
+        keywords = text.lower().split()
+        reply = next((replies[key] for key in keywords if key in replies), None)
         if reply:
             if random.random() < 0.2:
-                update.message.reply_text(reply)
+                update.message.reply_text(random.choice(reply))
 
 
 def on_enter(update: Update, context: CallbackContext) -> None:
