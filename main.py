@@ -20,9 +20,10 @@ vision_client = vision.ImageAnnotatorClient()
 with open("memes.yaml") as f:
     memes = yaml.load(f, Loader=yaml.FullLoader)
 
-welcome = memes["welcome"]
 fortunes = memes["fortunes"]
+memes = memes["memes"]
 slaps = memes["slaps"]
+welcome = memes["welcome"]
 
 
 def memify(update: Update, context: CallbackContext) -> None:
