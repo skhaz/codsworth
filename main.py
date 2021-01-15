@@ -26,7 +26,7 @@ def memify(update: Update, context: CallbackContext) -> None:
     pass
 
 
-def add_group(update: Update, context: CallbackContext) -> None:
+def on_enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         photos = member.get_profile_photos().photos
         for photo in photos:
@@ -45,7 +45,7 @@ bot = Bot(token=os.environ["TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None, workers=0)
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, memify))
-dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, add_group))
+dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, on_enter))
 
 
 @app.route("/", methods=["POST"])
