@@ -19,13 +19,14 @@ vision_client = vision.ImageAnnotatorClient()
 with open("memes.yaml") as f:
     memes = yaml.load(f, Loader=yaml.FullLoader)
 
+welcome = memes["welcome"]
+
 
 def memify(update: Update, context: CallbackContext) -> None:
     pass
 
 
 def add_group(update: Update, context: CallbackContext) -> None:
-    welcome = memes["welcome"]
     for member in update.message.new_chat_members:
         photos = member.get_profile_photos().photos
         for photo in photos:
@@ -35,7 +36,7 @@ def add_group(update: Update, context: CallbackContext) -> None:
             annotations = response.label_annotations
             labels = set([label.description.lower() for label in annotations])
             message = next((welcome[key] for key in labels if key in welcome), None)
-            if result:
+            if message:
                 update.message.reply_text(message)
                 break
 
