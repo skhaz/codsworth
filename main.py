@@ -41,13 +41,18 @@ def on_enter(update: Update, context: CallbackContext) -> None:
                 break
 
 
+def on_leave(update: Update, context: CallbackContext) -> None:
+    pass
+
+
 bot = Bot(token=os.environ["TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None, workers=0)
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, memify))
 dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, on_enter))
+dispatcher.add_handler(MessageHandler(Filters.status_update.left_chat_member, on_leave))
 
-
+ 
 @app.route("/", methods=["POST"])
 def index() -> Response:
     dispatcher.process_update(
