@@ -11,9 +11,9 @@ from telegram import Bot, Update
 from telegram.ext import (
     Dispatcher,
     Filters,
+    CallbackContext,
     CommandHandler,
     MessageHandler,
-    CallbackContext,
 )
 
 from google.cloud import vision
@@ -33,18 +33,28 @@ welcome = memes["welcome"]
 
 
 def memify(update: Update, context: CallbackContext) -> None:
-    text = update.message.text
-    if text:
-        keywords = text.lower().split()
-        reply = next((replies[key] for key in keywords if key in replies), None)
-        if reply:
-            if random.random() < 0.2:
-                update.message.reply_text(random.choice(reply))
+    message = update.message
+    if not message:
+        return
+
+    text = message.text
+    if not text:
+        return
+
+    keywords = text.lower().split()
+
+    reply = next((replies[key] for key in keywords if key in replies), None)
+
+    if reply:
+        if random.random() < 0.2:
+            message.reply_text(random.choice(reply))
 
 
 def on_enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
+
         photos = member.get_profile_photos().photos
+
         for photo in photos:
             buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
             image = vision.Image(content=bytes(buffer))
@@ -52,6 +62,7 @@ def on_enter(update: Update, context: CallbackContext) -> None:
             annotations = response.label_annotations
             labels = set([label.description.lower() for label in annotations])
             message = next((welcome[key] for key in labels if key in welcome), None)
+
             if message:
                 update.message.reply_text(message)
                 break
