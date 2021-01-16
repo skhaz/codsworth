@@ -1,5 +1,6 @@
 import os
 import http
+import subprocess
 import random
 
 import yaml
@@ -14,6 +15,7 @@ from telegram.ext import (
     CallbackContext,
     CommandHandler,
     MessageHandler,
+    RegexHandler,
 )
 
 from google.cloud import vision
@@ -32,6 +34,17 @@ slaps = memes["slaps"]
 welcome = memes["welcome"]
 
 
+def sed(update: Update, context: CallbackContext) -> None:
+    message = update.message
+    reply_to = message.reply_to_message
+    result = subprocess.run(["sed", "-e", message.text], text=True, input=reply_to.text, capture_output=True)
+    if result.returncode == 0:
+        reply = result.stdout.strip()
+        if reply:
+            message.delete()
+            reply_to.reply_text(reply)
+
+
 def memify(update: Update, context: CallbackContext) -> None:
     message = update.message
     if not message:
@@ -42,7 +55,6 @@ def memify(update: Update, context: CallbackContext) -> None:
         return
 
     keywords = text.lower().split()
-
     reply = next((replies[key] for key in keywords if key in replies), None)
 
     if reply:
@@ -50,7 +62,7 @@ def memify(update: Update, context: CallbackContext) -> None:
             message.reply_text(random.choice(reply))
 
 
-def on_enter(update: Update, context: CallbackContext) -> None:
+def enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
 
         photos = member.get_profile_photos().photos
@@ -82,8 +94,9 @@ def slap(update: Update, context: CallbackContext) -> None:
 bot = Bot(token=os.environ["TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None, workers=0)
+dispatcher.add_handler(RegexHandler(r"^s/", sed))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, memify))
-dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, on_enter))
+dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, enter))
 dispatcher.add_handler(CommandHandler("fortune", fortune))
 dispatcher.add_handler(CommandHandler("slap", slap))
 
