@@ -19,8 +19,6 @@ from telegram.ext import (
 
 from google.cloud import vision
 
-DID_YOU_MEAN = "Você quis dizer"
-
 app = Flask(__name__)
 
 vision_client = vision.ImageAnnotatorClient()
@@ -45,7 +43,7 @@ def sed(update: Update, context: CallbackContext) -> None:
         reply = result.stdout.strip()
         if reply:
             # message.delete()
-            html = f'<b>{DID_YOU_MEAN}:</b>\n"{reply}"'
+            html = f'<b>Você quis dizer:</b>\n"{reply}"'
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
 
 
