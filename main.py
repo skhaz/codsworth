@@ -38,7 +38,7 @@ def sed(update: Update, context: CallbackContext) -> None:
     reply_to = message.reply_to_message
     if not reply_to:
         return
-    result = subprocess.run(["sed", "-e", message.text], text=True, input=reply_to.text, capture_output=True)
+    result = subprocess.run(["sed", "-r", message.text], text=True, input=reply_to.text, capture_output=True)
     if result.returncode == 0:
         reply = result.stdout.strip()
         if reply:
