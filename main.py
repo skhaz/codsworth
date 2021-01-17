@@ -8,7 +8,7 @@ import yaml
 from flask import Flask, request
 from werkzeug.wrappers import Response
 
-from telegram import Bot, Update
+from telegram import Bot, Update, ParseMode
 from telegram.ext import (
     Dispatcher,
     Filters,
@@ -18,6 +18,8 @@ from telegram.ext import (
 )
 
 from google.cloud import vision
+
+DID_YOU_MEAN = "Você quis dizer"
 
 app = Flask(__name__)
 
@@ -43,10 +45,11 @@ def sed(update: Update, context: CallbackContext) -> None:
         reply = result.stdout.strip()
         if reply:
             # message.delete()
-            reply_to.reply_text(reply)
+            html = f'<b>{DID_YOU_MEAN}:</b>\n"{reply}"'
+            reply_to.reply_text(html, parse_mode=ParseMode.HTML)
 
 
-def memify(update: Update, context: CallbackContext) -> None:
+def meme(update: Update, context: CallbackContext) -> None:
     message = update.message
     keywords = message.text.lower().split()
     reply = next((replies[key] for key in keywords if key in replies), None)
@@ -85,7 +88,7 @@ bot = Bot(token=os.environ["TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None, workers=0)
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
-dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, memify))
+dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, meme))
 dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, enter))
 dispatcher.add_handler(CommandHandler("fortune", fortune))
 dispatcher.add_handler(CommandHandler("slap", slap))
