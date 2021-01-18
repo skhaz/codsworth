@@ -1,7 +1,9 @@
 import os
 import http
 import subprocess
-import random
+
+from html import escape
+from random import random, choice
 
 import yaml
 
@@ -42,18 +44,19 @@ def sed(update: Update, context: CallbackContext) -> None:
     if result.returncode == 0:
         reply = result.stdout.strip()
         if reply:
-            # message.delete()
-            html = f'<b>Você quis dizer:</b>\n"{reply}"'
+            html = f'<b>Você quis dizer:</b>\n"{escape(reply)}"'
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
 
 
 def meme(update: Update, context: CallbackContext) -> None:
     message = update.message
+    if not message:
+        return
     keywords = message.text.lower().split()
     reply = next((replies[key] for key in keywords if key in replies), None)
     if reply:
-        if random.random() < 0.2:
-            message.reply_text(random.choice(reply))
+        if random() < 0.2:
+            message.reply_text(choice(reply))
 
 
 def enter(update: Update, context: CallbackContext) -> None:
@@ -73,13 +76,13 @@ def enter(update: Update, context: CallbackContext) -> None:
 
 def fortune(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message or update.message
-    message.reply_text(random.choice(fortunes))
+    message.reply_text(choice(fortunes))
 
 
 def slap(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message
     if message:
-        message.reply_text(random.choice(slaps))
+        message.reply_text(choice(slaps))
 
 
 bot = Bot(token=os.environ["TOKEN"])
