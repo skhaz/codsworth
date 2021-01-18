@@ -44,7 +44,8 @@ def sed(update: Update, context: CallbackContext) -> None:
     if result.returncode == 0:
         reply = result.stdout.strip()
         if reply:
-            html = f'<b>Você quis dizer:</b>\n"{escape(reply)}"'
+            reply = escape(reply)
+            html = f'<b>Você quis dizer:</b>\n"{reply}"'
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
 
 
