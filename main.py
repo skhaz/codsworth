@@ -93,11 +93,17 @@ def repost(update: Update, context: CallbackContext) -> None:
     mimetype, _ = mimetypes.guess_type(filename)
     reply_with = getattr(message, f"reply_{mimetype.split('/')[0]}")
     with open(filename, "rb") as f:
-        reply_with(f, "")
+        reply_with(f)
 
 
 def rules(update: Update, context: CallbackContext) -> None:
-    pass
+    message = update.message.reply_to_message or update.message
+    if not message:
+        return
+    assets = Path("assets/rules")
+    filename = choice(list(assets.iterdir()))
+    with open(filename, "rb") as f:
+        message.reply_video(f)
 
 
 def slap(update: Update, context: CallbackContext) -> None:
