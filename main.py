@@ -1,7 +1,9 @@
 import os
 import http
 import subprocess
+import mimetypes
 
+from pathlib import Path
 from html import escape
 from random import random, choice
 
@@ -24,6 +26,8 @@ from google.cloud import vision
 app = Flask(__name__)
 
 vision_client = vision.ImageAnnotatorClient()
+
+mimetypes.init()
 
 
 with open("memes.yaml") as f:
@@ -80,6 +84,22 @@ def fortune(update: Update, context: CallbackContext) -> None:
     message.reply_text(choice(fortunes))
 
 
+def repost(update: Update, context: CallbackContext) -> None:
+    message = update.message.reply_to_message
+    if not message:
+        return
+    assets = Path("assets/repost")
+    filename = choice(list(assets.iterdir()))
+    mimetype, _ = mimetypes.guess_type(filename)
+    reply_with = getattr(message, f"reply_{mimetype.split('/')[0]}")
+    with open(filename, "rb") as f:
+        reply_with(f, "")
+
+
+def rules(update: Update, context: CallbackContext) -> None:
+    pass
+
+
 def slap(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message
     if message:
@@ -93,6 +113,8 @@ dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, meme))
 dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, enter))
 dispatcher.add_handler(CommandHandler("fortune", fortune))
+dispatcher.add_handler(CommandHandler("repost", repost))
+dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 
 
