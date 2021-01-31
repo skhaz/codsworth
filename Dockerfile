@@ -1,6 +1,8 @@
-FROM python:3.8
+FROM python:3.8-slim
 
 ENV PYTHONUNBUFFERED True
+
+RUN apt-get update -y && apt-get install -y mime-support
 
 WORKDIR /app
 
