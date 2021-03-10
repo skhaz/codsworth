@@ -51,6 +51,10 @@ def sed(update: Update, context: CallbackContext) -> None:
             reply = escape(reply)
             html = f'<b>Você quis dizer:</b>\n"{reply}"'
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
+    try:
+        message.delete()
+    except:
+        pass
 
 
 def meme(update: Update, context: CallbackContext) -> None:
