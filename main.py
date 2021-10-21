@@ -30,8 +30,8 @@ vision_client = vision.ImageAnnotatorClient()
 mimetypes.init()
 
 
-with open("memes.yaml") as f:
-    memes = yaml.load(f, Loader=yaml.FullLoader)
+with open("memes.yaml", "rt", encoding="utf-8") as f:
+    memes = yaml.safe_load(f)
 
 fortunes = memes["fortunes"]
 replies = memes["replies"]
@@ -64,7 +64,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     keywords = message.text.lower().split()
     reply = next((replies[key] for key in keywords if key in replies), None)
     if reply:
-        if random() < 0.2:
+        if random() < 0.8:
             message.reply_text(choice(reply))
 
 
