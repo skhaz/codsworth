@@ -91,7 +91,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     reply = next((replies[key] for key in keywords if key in replies), None)
 
     if reply:
-        if random() < 0.8:
+        if random() < 0.6:
             message.reply_text(choice(reply))
 
 
