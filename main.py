@@ -68,6 +68,7 @@ def sed(update: Update, context: CallbackContext) -> None:
 
     if result.returncode == 0:
         reply = result.stdout.strip()
+
         if reply:
             reply = escape(reply)
             html = f'<b>Você quis dizer:</b>\n"{reply}"'
