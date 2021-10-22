@@ -128,7 +128,7 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 
 
-@app.route("/", methods=["POST"])
+@app.post("/")
 def index() -> Response:
     dispatcher.process_update(
         Update.de_json(request.get_json(force=True), bot))
