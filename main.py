@@ -11,6 +11,7 @@ from random import choice, random
 import yaml
 
 from flask import Flask, request
+from fuzzywuzzy import fuzz
 from google.cloud import vision
 from telegram import Bot, ParseMode, Update
 from werkzeug.wrappers import Response
@@ -37,6 +38,7 @@ fortunes = memes["fortunes"]
 replies = memes["replies"]
 slaps = memes["slaps"]
 welcome = memes["welcome"]
+help_ = memes["help"]
 
 
 def deunicode(data):
@@ -86,13 +88,22 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    keywords = [deunicode(word) for word in message.text.lower().split()]
+    text = deunicode(message.text.lower())
 
-    reply = next((replies[key] for key in keywords if key in replies), None)
+    if not text:
+        return
+
+    reply = next((replies[key] for key in text.split() if key in replies), None)
 
     if reply:
         if random() < 0.2:
             message.reply_text(choice(reply))
+    
+    if max([fuzz.ratio(h, text) for h in help_]) > 60:
+        filename = Path(r"assets/to get by/0.mp4")
+
+        with open(filename, "rb") as f:
+            message.reply_video(f)
 
 
 def enter(update: Update, context: CallbackContext) -> None:
