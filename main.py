@@ -38,7 +38,7 @@ fortunes = memes["fortunes"]
 replies = memes["replies"]
 slaps = memes["slaps"]
 welcome = memes["welcome"]
-help_ = memes["help"]
+helps = memes["helps"]
 
 
 def deunicode(data):
@@ -99,7 +99,7 @@ def meme(update: Update, context: CallbackContext) -> None:
         if random() < 0.2:
             message.reply_text(choice(reply))
     
-    if max([fuzz.ratio(h, text) for h in help_]) > 40:
+    if max([fuzz.ratio(h, text) for h in helps]) > 60:
         filename = Path(r"assets/to get by/0.mp4")
 
         with open(filename, "rb") as f:
