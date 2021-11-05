@@ -52,7 +52,6 @@ def remove_unicode(string: str) -> str:
     return functools.reduce(lambda x, f: f(x), funcs, string)
 
 
-
 def sed(update: Update, context: CallbackContext) -> None:
     message = update.message
     reply_to = message.reply_to_message
