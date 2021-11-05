@@ -41,7 +41,7 @@ welcome = memes["welcome"]
 helps = memes["helps"]
 
 
-def deunicode(data):
+def remove_unicode(string: str) -> str:
     funcs = [
         lambda u: unicodedata.normalize("NFD", u),
         lambda s: s.encode("ascii", "ignore"),
@@ -49,7 +49,8 @@ def deunicode(data):
         lambda s: s.strip(),
     ]
 
-    return functools.reduce(lambda x, f: f(x), funcs, data)
+    return functools.reduce(lambda x, f: f(x), funcs, string)
+
 
 
 def sed(update: Update, context: CallbackContext) -> None:
@@ -88,7 +89,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    text = deunicode(message.text.lower())
+    text = remove_unicode(message.text.lower())
 
     if not text:
         return
