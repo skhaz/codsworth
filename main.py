@@ -1,7 +1,7 @@
-import os
-import http
 import functools
+import http
 import mimetypes
+import os
 import subprocess
 import unicodedata
 from html import escape
@@ -9,13 +9,12 @@ from pathlib import Path
 from random import choice, random
 
 import yaml
-
 from flask import Flask, request
 from fuzzywuzzy import fuzz
 from google.cloud import vision
 from telegram import Bot, ParseMode, Update
-from werkzeug.wrappers import Response
 from telegram.error import TelegramError
+from werkzeug.wrappers import Response
 from telegram.ext import (
     CallbackContext,
     CommandHandler,
@@ -98,7 +97,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     if reply:
         if random() < 0.2:
             message.reply_text(choice(reply))
-    
+
     if max([fuzz.ratio(h, text) for h in helps]) > 70:
         filename = Path(r"assets/to get by/0.mp4")
 
