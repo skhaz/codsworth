@@ -14,8 +14,8 @@ from fuzzywuzzy import fuzz
 from google.cloud import vision
 from telegram import Bot, ParseMode, Update
 from telegram.error import TelegramError
-from werkzeug.wrappers import Response
 from requests import Session
+from werkzeug.wrappers import Response
 from telegram.ext import (
     CallbackContext,
     CommandHandler,
