@@ -109,7 +109,7 @@ def meme(update: Update, context: CallbackContext) -> None:
             message.reply_video(f)
             return
 
-    if random() < 0.01:
+    if random() < 0.1:
         response = requests.get('whatthecommit.com/index.txt')
         response.raise_for_status()
         message.reply_text(response.content)
