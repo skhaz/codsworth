@@ -110,9 +110,9 @@ def meme(update: Update, context: CallbackContext) -> None:
             return
 
     if random() < 0.1:
-        response = requests.get('whatthecommit.com/index.txt')
+        response = requests.get('http://whatthecommit.com/index.txt')
         response.raise_for_status()
-        message.reply_text(response.content)
+        message.reply_text(response.text)
         return
 
 
