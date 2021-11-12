@@ -14,7 +14,6 @@ from fuzzywuzzy import fuzz
 from google.cloud import vision
 from telegram import Bot, ParseMode, Update
 from telegram.error import TelegramError
-from requests import Session
 from werkzeug.wrappers import Response
 from telegram.ext import (
     CallbackContext,
@@ -27,8 +26,6 @@ from telegram.ext import (
 app = Flask(__name__)
 
 vision_client = vision.ImageAnnotatorClient()
-
-requests = Session()
 
 mimetypes.init()
 
@@ -108,12 +105,6 @@ def meme(update: Update, context: CallbackContext) -> None:
         with open(filename, "rb") as f:
             message.reply_video(f)
             return
-
-    if random() < 0.1:
-        response = requests.get('http://whatthecommit.com/index.txt')
-        response.raise_for_status()
-        message.reply_text(response.text)
-        return
 
 
 def enter(update: Update, context: CallbackContext) -> None:
