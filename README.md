@@ -19,5 +19,5 @@ gcloud run deploy delduca \
 Set Webhook (only need to be done once)
 
 ```shell
-curl "https://api.telegram.org/bot${TOKEN}/setWebhook?url=$(gcloud run services describe bot --format 'value(status.url)' --project ${PROJECT_ID})"
+curl "https://api.telegram.org/bot${TOKEN}/setWebhook?url=$(gcloud run services describe delduca --format 'value(status.url)' --project ${PROJECT_ID})"
 ```
