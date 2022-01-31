@@ -7,7 +7,7 @@ export TOKEN=your-telegram-bot-token
 ```
 
 ```bash
-gcloud run deploy bot \
+gcloud run deploy delduca \
     --source $(pwd) \
     --region us-central1 \
     --allow-unauthenticated \
