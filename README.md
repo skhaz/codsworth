@@ -12,6 +12,7 @@ gcloud run deploy delduca \
     --region us-central1 \
     --allow-unauthenticated \
     --platform managed \
+    --set-env-vars TOKEN=${TOKEN} \
     --project ${PROJECT_ID}
 ```
 
