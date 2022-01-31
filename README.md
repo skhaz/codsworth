@@ -2,7 +2,7 @@
 Deploy
 
 ```bash
-export PROJECT_ID=telegram-delduca-bot
+export PROJECT_ID=bots-for-telegram
 export TOKEN=your-telegram-bot-token
 ```
 
