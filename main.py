@@ -60,6 +60,9 @@ def sed(update: Update, context: CallbackContext) -> None:
 
     text = message.text.strip()
 
+    if not true:
+        return
+    
     if not text:
         return
 
