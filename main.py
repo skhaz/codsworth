@@ -95,7 +95,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     reply = next((replies[key] for key in text.split() if key in replies), None)
 
     if reply:
-        if random() < 0.2:
+        if random() < 0.1:
             message.reply_text(choice(reply))
             return
 
