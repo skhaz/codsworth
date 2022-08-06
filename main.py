@@ -164,6 +164,18 @@ def slap(update: Update, context: CallbackContext) -> None:
         message.reply_text(choice(slaps))
 
 
+def tramp(update: Update, context: CallbackContext) -> None:
+    message = update.message.reply_to_message or update.message
+
+    with open(Path(r"assets/to get by/0.mp4"), "rb") as f:
+        message.reply_video(f)
+
+    try:
+        message.delete()
+    except TelegramError:
+        pass
+
+
 bot = Bot(token=os.environ["TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None)
@@ -174,6 +186,7 @@ dispatcher.add_handler(CommandHandler("fortune", fortune))
 dispatcher.add_handler(CommandHandler("repost", repost))
 dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
+dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 
 
 @app.post("/")
