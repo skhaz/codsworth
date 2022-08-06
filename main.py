@@ -164,11 +164,20 @@ def slap(update: Update, context: CallbackContext) -> None:
         message.reply_text(choice(slaps))
 
 
+
 def tramp(update: Update, context: CallbackContext) -> None:
-    message = update.message.reply_to_message or update.message
+    message = update.message
+
+    if not message:
+        return
+
+    reply_to_message = update.message.reply_to_message
+
+    if not reply_to_message:
+        return
 
     with open(Path(r"assets/to get by/0.mp4"), "rb") as f:
-        message.reply_video(f)
+        reply_to_message.reply_video(f)
 
     try:
         message.delete()
