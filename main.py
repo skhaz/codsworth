@@ -6,22 +6,24 @@ import subprocess
 import unicodedata
 from html import escape
 from pathlib import Path
-from random import choice, random
+from random import choice
+from random import random
 
 import yaml
-from flask import Flask, request
+from flask import Flask
+from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud import vision
-from telegram import Bot, ParseMode, Update
+from telegram import Bot
+from telegram import ParseMode
+from telegram import Update
 from telegram.error import TelegramError
+from telegram.ext import CallbackContext
+from telegram.ext import CommandHandler
+from telegram.ext import Dispatcher
+from telegram.ext import Filters
+from telegram.ext import MessageHandler
 from werkzeug.wrappers import Response
-from telegram.ext import (
-    CallbackContext,
-    CommandHandler,
-    Dispatcher,
-    Filters,
-    MessageHandler,
-)
 
 app = Flask(__name__)
 
@@ -162,7 +164,6 @@ def slap(update: Update, context: CallbackContext) -> None:
 
     if message:
         message.reply_text(choice(slaps))
-
 
 
 def tramp(update: Update, context: CallbackContext) -> None:

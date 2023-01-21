@@ -7,7 +7,7 @@ deploy:
 	gcloud run deploy delduca --source $(shell pwd) --platform managed --allow-unauthenticated --project bots-for-telegram
 
 format:
-	isort main.py
+	isort --force-single-line-imports main.py
 	black main.py
 
 update:
