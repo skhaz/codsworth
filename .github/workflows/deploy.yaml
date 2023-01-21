@@ -21,6 +21,3 @@ jobs:
         with:
           service: delduca
           image: us-central1-docker.pkg.dev/bots-for-telegram/cloud-run-source-deploy/delduca
-
-      - name: Check
-        run: 'curl -X POST "${{ steps.deploy.outputs.url }}" -H "Content-Type: application/json" -d "{}"'
