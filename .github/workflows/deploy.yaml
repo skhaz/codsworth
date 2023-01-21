@@ -1,0 +1,26 @@
+name: Deploy on Google Cloud Platform
+
+on:
+  push:
+    branches: "**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      - name: Deploy
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          service: delduca
+          image: gcr.io/cloudrun/delduca
+
+      - name: Check
+        run: 'curl -X POST "${{ steps.deploy.outputs.url }}" -H "Content-Type: application/json" -d "{}"'
