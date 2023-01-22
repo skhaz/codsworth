@@ -2,7 +2,8 @@ name: Deploy on Google Cloud Platform
 
 on:
   push:
-    branches: "**"
+    branches:
+      - master
 
 jobs:
   deploy:
