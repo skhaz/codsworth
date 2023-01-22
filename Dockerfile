@@ -1,3 +1,4 @@
+#syntax=docker/dockerfile:1
 FROM python:3.10-slim AS base
 
 ENV PATH /opt/venv/bin:$PATH
@@ -13,7 +14,12 @@ RUN pip install --no-cache-dir --requirement requirements.txt
 FROM base
 
 WORKDIR /app
-RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
+RUN <<EOF
+set -eu
+apt-get update
+apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
+EOF
+
 COPY --from=builder /opt/venv /opt/venv
 COPY . .
 
