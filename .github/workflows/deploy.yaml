@@ -35,7 +35,7 @@ jobs:
       - name: Build and Push Container
         run: |-
           docker build -t us-central1-docker.pkg.dev/bots-for-telegram/cloud-run-source-deploy/delduca:latest .
-          docker push us-central1-docker.pkg.dev/bots-for-telegram/cloud-run-source-deploy/delduca:latest"
+          docker push us-central1-docker.pkg.dev/bots-for-telegram/cloud-run-source-deploy/delduca:latest
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
