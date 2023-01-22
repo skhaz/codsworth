@@ -15,8 +15,8 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud import vision
 from telegram import Bot
-from telegram import ParseMode
 from telegram import Update
+from telegram.constants import ParseMode
 from telegram.error import TelegramError
 from telegram.ext import CallbackContext
 from telegram.ext import CommandHandler
@@ -185,6 +185,7 @@ def tramp(update: Update, context: CallbackContext) -> None:
     except TelegramError:
         pass
 
+
 def test(update: Update, context: CallbackContext) -> None:
     message = update.message
 
@@ -211,6 +212,7 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("test", test))
+
 
 @app.post("/")
 def index() -> Response:
