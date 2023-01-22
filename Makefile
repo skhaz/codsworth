@@ -9,10 +9,7 @@ deploy: ## Deploy on Google Cloud Run
 	gcloud config set run/region us-central1
 	gcloud run deploy delduca --source $(shell pwd) --platform managed --allow-unauthenticated --project bots-for-telegram
 
-vet: ## Run linters, type-checking, auto-formaters, and other tools
+vet: ## Run linters, auto-formaters, and other tools
 	black main.py
 	flake8 --max-line-length=88 main.py
 	isort --force-single-line-imports main.py
-
-update: ## Upgrade dependencies
-	pur -r requirements.txt

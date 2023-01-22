@@ -15,12 +15,12 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud import vision
 from telegram import Bot
+from telegram.ext import Dispatcher
 from telegram import Update
-from telegram.constants import ParseMode
+from telegram import ParseMode
 from telegram.error import TelegramError
 from telegram.ext import CallbackContext
 from telegram.ext import CommandHandler
-from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
 from werkzeug.wrappers import Response
