@@ -27,11 +27,11 @@ jobs:
 
       - name: Build and Push Container
         run: |-
-          docker build -t gcr.io/bots-for-telegram/delduca:latest .
-          docker push gcr.io/bots-for-telegram/delduca:latest
+          docker build -t gcr.io/bots-for-telegram/delduca:${GITHUB_SHA} .
+          docker push gcr.io/bots-for-telegram/delduca:${GITHUB_SHA}
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
         with:
           service: delduca
-          image: gcr.io/bots-for-telegram/delduca:latest
+          image: gcr.io/bots-for-telegram/delduca:${GITHUB_SHA}
