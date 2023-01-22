@@ -200,7 +200,7 @@ def test(update: Update, context: CallbackContext) -> None:
     reply_to_message.reply_text("Test 1")
 
 
-bot = Bot(token=os.environ["TOKEN"])
+bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None)
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
