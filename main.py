@@ -28,7 +28,7 @@ from werkzeug.wrappers import Response
 
 app = Flask(__name__)
 
-vision_client = ImageAnnotatorClient()
+vision = ImageAnnotatorClient()
 
 mimetypes.init()
 
@@ -123,7 +123,7 @@ def enter(update: Update, context: CallbackContext) -> None:
         for photo in photos:
             buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
             image = Image(content=bytes(buffer))
-            response = vision_client.label_detection(image=image)
+            response = vision.label_detection(image=image)
             annotations = response.label_annotations
             labels = set([label.description.lower() for label in annotations])
             message = next((welcome[key] for key in labels if key in welcome), None)
