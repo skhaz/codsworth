@@ -193,20 +193,6 @@ def tramp(update: Update, context: CallbackContext) -> None:
         pass
 
 
-def test(update: Update, context: CallbackContext) -> None:
-    message = update.message
-
-    if not message:
-        return
-
-    reply_to_message = update.message.reply_to_message
-
-    if not reply_to_message:
-        return
-
-    reply_to_message.reply_text("Test 1")
-
-
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None)
@@ -218,7 +204,6 @@ dispatcher.add_handler(CommandHandler("repost", repost))
 dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
-dispatcher.add_handler(CommandHandler("test", test))
 
 
 @app.post("/")
