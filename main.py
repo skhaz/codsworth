@@ -13,7 +13,8 @@ import yaml
 from flask import Flask
 from flask import request
 from fuzzywuzzy import fuzz
-from google.cloud import vision
+from google.cloud.vision import Image
+from google.cloud.vision import ImageAnnotatorClient
 from telegram import Bot
 from telegram import ParseMode
 from telegram import Update
@@ -27,7 +28,7 @@ from werkzeug.wrappers import Response
 
 app = Flask(__name__)
 
-vision_client = vision.ImageAnnotatorClient()
+vision_client = ImageAnnotatorClient()
 
 mimetypes.init()
 
@@ -121,7 +122,7 @@ def enter(update: Update, context: CallbackContext) -> None:
 
         for photo in photos:
             buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
-            image = vision.Image(content=bytes(buffer))
+            image = Image(content=bytes(buffer))
             response = vision_client.label_detection(image=image)
             annotations = response.label_annotations
             labels = set([label.description.lower() for label in annotations])
