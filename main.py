@@ -78,7 +78,7 @@ def sed(update: Update, context: CallbackContext) -> None:
             html = f'<b>Você quis dizer:</b>\n"{reply}"'
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
     else:
-        author = message.chat.username
+        author = message.from_user.username
 
         if author:
             reply = f"Ihhh... @{author} não sabe /regex/! 😂"
