@@ -80,7 +80,7 @@ def sed(update: Update, context: CallbackContext) -> None:
         author = message.chat.username
 
         if author:
-            reply = f"Ihhh... O @{author} não sabe /regex/! 😂"
+            reply = f"Ihhh... @{author} não sabe /regex/! 😂"
             bot.sendMessage(chat_id=update.effective_chat.id, text=reply)
 
     try:
