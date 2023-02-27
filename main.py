@@ -57,6 +57,7 @@ def remove_unicode(string: str) -> str:
 def sed(update: Update, context: CallbackContext) -> None:
     message = update.message
     reply_to = message.reply_to_message
+    author = message.from_user.username
 
     if not reply_to:
         return
@@ -66,6 +67,8 @@ def sed(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
+    success = False
+
     shell = ["sed", "-r", text]
 
     result = subprocess.run(shell, text=True, input=reply_to.text, capture_output=True)
@@ -74,20 +77,19 @@ def sed(update: Update, context: CallbackContext) -> None:
         reply = result.stdout.strip()
 
         if reply:
+            success = True
             reply = escape(reply)
             html = f'<b>Você quis dizer:</b>\n"{reply}"'
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
-    else:
-        author = message.from_user.username
-
-        if author:
-            reply = f"Ihhh... @{author} não sabe /regex/! 😂"
-            bot.sendMessage(chat_id=update.effective_chat.id, text=reply)
 
     try:
         message.delete()
     except TelegramError:
         pass
+
+    if not success:
+        reply = f"Ihhh... @{author} não sabe /regex/! 😂"
+        bot.sendMessage(chat_id=update.effective_chat.id, text=reply)
 
 
 def meme(update: Update, context: CallbackContext) -> None:
