@@ -33,7 +33,6 @@ slaps:
 welcome:
   anime: "Um otaku entrou no grupo!"
   cartoon: "Sinto cheiro de otaku..."
-  adult: "Tirem as crianças da sala!!!"
   money: "Já chegou o disco voador!"
   animal: "Abriram as porteiras e o animal tá solto"
 
@@ -48,3 +47,14 @@ helps:
   - alguem teria
   - alguem sabe
   - alguem entende
+
+porn:
+  - Tirem as crianças da sala!!! 🍌
+
+likelihoods:
+  - UNKNOWN
+  - VERY_UNLIKELY
+  - UNLIKELY
+  - POSSIBLE
+  - LIKELY
+  - VERY_LIKELY

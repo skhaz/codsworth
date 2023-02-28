@@ -41,6 +41,8 @@ replies = memes["replies"]
 slaps = memes["slaps"]
 welcome = memes["welcome"]
 helps = memes["helps"]
+porn = memes["porn"]
+likelihoods = tuple(memes["likelihoods"])
 
 
 def remove_unicode(string: str) -> str:
@@ -125,7 +127,16 @@ def enter(update: Update, context: CallbackContext) -> None:
         for photo in photos:
             buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
             image = Image(content=bytes(buffer))
-            response = vision.label_detection(image=image)
+
+            is_adult = likelihoods[
+                vision.safe_search_detection(image).safe_search_annotation.adult
+            ]
+
+            if is_adult == "LIKELY" or is_adult == "VERY_LIKELY":
+                update.message.reply_text(choice(porn))
+                break
+
+            response = vision.label_detection(image)
             annotations = response.label_annotations
             labels = set([label.description.lower() for label in annotations])
             message = next((welcome[key] for key in labels if key in welcome), None)
