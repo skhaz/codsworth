@@ -45,6 +45,10 @@ porn = memes["porn"]
 likelihoods = tuple(memes["likelihoods"])
 
 
+def likely(likelihood):
+    return likelihood in ["LIKELY", "VERY_LIKELY"]
+
+
 def remove_unicode(string: str) -> str:
     funcs = [
         lambda u: unicodedata.normalize("NFD", u),
@@ -128,11 +132,11 @@ def enter(update: Update, context: CallbackContext) -> None:
             buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
             image = Image(content=bytes(buffer))
 
-            is_adult = likelihoods[
+            likelihood = likelihoods[
                 vision.safe_search_detection(image).safe_search_annotation.adult
             ]
 
-            if is_adult == "LIKELY" or is_adult == "VERY_LIKELY":
+            if likely(likelihood):
                 update.message.reply_text(choice(porn))
                 break
 
