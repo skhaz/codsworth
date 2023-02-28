@@ -140,8 +140,7 @@ def enter(update: Update, context: CallbackContext) -> None:
                 update.message.reply_text(choice(porn))
                 break
 
-            response = vision.label_detection(image)
-            annotations = response.label_annotations
+            annotations = vision.label_detection(image).label_annotations
             labels = set([label.description.lower() for label in annotations])
             message = next((welcome[key] for key in labels if key in welcome), None)
 
