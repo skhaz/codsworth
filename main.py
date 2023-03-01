@@ -243,12 +243,18 @@ def prompt(update: Update, context: CallbackContext) -> None:
     except TypeError:
         return
 
+    print(">>> command", command)
+    print(">>> argument", argument)
+    print(">>> message", message)
+
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=argument,
         temperature=0,
         max_tokens=7,
     )
+
+    print(">>> response", response)
 
     message.reply_text(response["choices"][0]["text"])
 
