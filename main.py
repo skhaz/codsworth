@@ -54,29 +54,6 @@ def likely(likelihood):
     return likelihood in ["LIKELY", "VERY_LIKELY"]
 
 
-def process(update: Update) -> Tuple[str, str, Message]:
-    message = update.message
-
-    if not message:
-        return
-
-    text = message.text
-
-    if not text:
-        return
-
-    try:
-        [command, argument] = text.split()
-    except ValueError:
-        return
-
-    command = command.strip("/")
-
-    argument = argument.strip()
-
-    return command, argument, message
-
-
 def remove_unicode(string: str) -> str:
     funcs = [
         lambda u: unicodedata.normalize("NFD", u),
@@ -238,18 +215,23 @@ def tramp(update: Update, context: CallbackContext) -> None:
 
 
 def prompt(update: Update, context: CallbackContext) -> None:
-    try:
-        [command, argument, message] = process(update)
-    except TypeError:
+    message = update.message
+
+    if not message:
         return
 
-    print(">>> command", command)
-    print(">>> argument", argument)
-    print(">>> message", message)
+    text = message.text
+
+    if not text:
+        return
+
+    text = text.lstrip("/prompt")
+
+    print(">>> text", text)
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=argument,
+        prompt=text,
         temperature=0,
         max_tokens=7,
     )
