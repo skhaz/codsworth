@@ -232,13 +232,12 @@ def prompt(update: Update, context: CallbackContext) -> None:
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=text,
+        stop=None,
         temperature=0,
-        max_tokens=7,
+        max_tokens=1024,
     )
 
-    print(">>> response", response)
-
-    message.reply_text(response["choices"][0]["text"])
+    message.reply_text(response.choices[0].text)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
