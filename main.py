@@ -83,19 +83,19 @@ def sed(update: Update, context: CallbackContext) -> None:
         reply = result.stdout.strip()
 
         if reply:
+            try:
+                message.delete()
+            except TelegramError:
+                pass
+
             success = True
             reply = escape(reply)
             html = f'<b>Você quis dizer:</b>\n"{reply}"'
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
 
-    try:
-        message.delete()
-    except TelegramError:
-        pass
-
     if not success:
         reply = f"Ihhh... @{author} não sabe /regex/! 😂"
-        bot.sendMessage(chat_id=update.effective_chat.id, text=reply)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
 
 def meme(update: Update, context: CallbackContext) -> None:
