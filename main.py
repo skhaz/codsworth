@@ -8,7 +8,9 @@ from html import escape
 from pathlib import Path
 from random import choice
 from random import random
+from typing import Tuple
 
+import openai
 import yaml
 from flask import Flask
 from flask import request
@@ -16,6 +18,7 @@ from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
 from telegram import Bot
+from telegram import Message
 from telegram import ParseMode
 from telegram import Update
 from telegram.error import TelegramError
@@ -29,6 +32,8 @@ from werkzeug.wrappers import Response
 app = Flask(__name__)
 
 vision = ImageAnnotatorClient()
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 mimetypes.init()
 
@@ -47,6 +52,29 @@ likelihoods = tuple(memes["likelihoods"])
 
 def likely(likelihood):
     return likelihood in ["LIKELY", "VERY_LIKELY"]
+
+
+def process(update: Update) -> Tuple[str, str, Message]:
+    message = update.message
+
+    if not message:
+        return
+
+    text = message.text
+
+    if not text:
+        return
+
+    try:
+        [command, argument] = text.split()
+    except ValueError:
+        return
+
+    command = command.strip("/")
+
+    argument = argument.strip()
+
+    return command, argument, message
 
 
 def remove_unicode(string: str) -> str:
@@ -209,6 +237,22 @@ def tramp(update: Update, context: CallbackContext) -> None:
         pass
 
 
+def prompt(update: Update, context: CallbackContext) -> None:
+    try:
+        [command, argument, message] = process(update)
+    except TypeError:
+        return
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=argument,
+        temperature=0,
+        max_tokens=7,
+    )
+
+    message.reply_text(response["choices"][0]["text"])
+
+
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=None)
@@ -220,6 +264,7 @@ dispatcher.add_handler(CommandHandler("repost", repost))
 dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
+dispatcher.add_handler(CommandHandler("prompt", prompt))
 
 
 @app.post("/")

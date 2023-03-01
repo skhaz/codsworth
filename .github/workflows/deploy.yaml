@@ -29,4 +29,5 @@ jobs:
             --region us-central1 \
             --allow-unauthenticated \
             --platform managed \
-            --set-env-vars TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
+            --set-env-vars TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} \
+            --set-env-vars OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
