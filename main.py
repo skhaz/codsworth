@@ -227,8 +227,6 @@ def prompt(update: Update, context: CallbackContext) -> None:
 
     text = text.lstrip("/prompt")
 
-    print(">>> text", text)
-
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=text,
