@@ -225,6 +225,10 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
+    if message.from_user.username == "@brehster":
+        message.reply_text("Teu cu")
+        return
+
     text = text.lstrip("/prompt")
 
     response = openai.Completion.create(
