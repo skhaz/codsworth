@@ -215,31 +215,13 @@ def tramp(update: Update, context: CallbackContext) -> None:
 
 
 def prompt(update: Update, context: CallbackContext) -> None:
-    message = update.message
-
-    if not message:
-        return
-
-    text = message.text
+    text = update.message.text.lstrip("/prompt")
 
     if not text:
         return
 
-    if message.from_user.username == "@skhaz":
-        message.reply_text("Teu cu")
-        return
-
-    text = text.lstrip("/prompt")
-
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=text,
-        stop=None,
-        temperature=0,
-        max_tokens=1024,
-    )
-
-    message.reply_text(response.choices[0].text)
+    response = openai.Completion.create(model="text-davinci-003", prompt=text)
+    update.message.reply_text(response.choices[0].text)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
