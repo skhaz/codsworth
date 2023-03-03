@@ -218,7 +218,12 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
-    response = openai.Completion.create(model="text-davinci-003", prompt=text, max_tokens=2048, temperature=0.2)
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=text,
+        max_tokens=2048,
+    )
+
     update.message.reply_text(response.choices[0].text)
 
 
