@@ -8,7 +8,6 @@ from html import escape
 from pathlib import Path
 from random import choice
 from random import random
-from typing import Tuple
 
 import openai
 import yaml
@@ -18,7 +17,6 @@ from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
 from telegram import Bot
-from telegram import Message
 from telegram import ParseMode
 from telegram import Update
 from telegram.error import TelegramError
@@ -220,7 +218,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
-    response = openai.Completion.create(model="text-davinci-003", prompt=text)
+    response = openai.Completion.create(model="text-davinci-003", prompt=text, max_tokens=2048, temperature=0.2)
     update.message.reply_text(response.choices[0].text)
 
 
