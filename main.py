@@ -219,8 +219,8 @@ def prompt(update: Update, context: CallbackContext) -> None:
         return
 
     response = openai.Completion.create(
-        model="text-davinci-003",
         prompt=text,
+        model="text-davinci-003",
         max_tokens=2048,
     )
 
