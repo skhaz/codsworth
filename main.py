@@ -225,7 +225,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
-    if message.from_user.username == "@brehster":
+    if message.from_user.username == "@skhaz":
         message.reply_text("Teu cu")
         return
 
