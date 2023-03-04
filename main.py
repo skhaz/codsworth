@@ -228,8 +228,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             max_tokens=2048,
         )
         .choices[0]
-        .text,
-        extensions=["fenced_code"],
+        .text
     )
 
     cleaner = Cleaner(remove_tags=("p", "div"))
