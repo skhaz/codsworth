@@ -137,11 +137,11 @@ def enter(update: Update, context: CallbackContext) -> None:
             buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
             image = Image(content=bytes(buffer))
 
-            likelihood = likelihoods[
+            adult = likelihoods[
                 vision.safe_search_detection(image).safe_search_annotation.adult
             ]
 
-            if likely(likelihood):
+            if likely(adult):
                 update.message.reply_text(choice(porn))
                 break
 
