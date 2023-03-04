@@ -17,8 +17,6 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
-from lxml.html.clean import Cleaner
-from markdown import markdown
 from telegram import Bot
 from telegram import ParseMode
 from telegram import Update
