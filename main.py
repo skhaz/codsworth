@@ -215,7 +215,7 @@ def tramp(update: Update, context: CallbackContext) -> None:
 
 
 def prompt(update: Update, context: CallbackContext) -> None:
-    prompt = re.sub(r"^/prompt(@delduca_bot)?\s", "", update.message.text)
+    prompt = re.sub(r"^/prompt(@delduca_bot)?$", "", update.message.text)
 
     if not prompt:
         return
