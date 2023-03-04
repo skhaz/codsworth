@@ -4,6 +4,7 @@ import mimetypes
 import os
 import subprocess
 import unicodedata
+import re
 from html import escape
 from pathlib import Path
 from random import choice
@@ -214,23 +215,19 @@ def tramp(update: Update, context: CallbackContext) -> None:
 
 
 def prompt(update: Update, context: CallbackContext) -> None:
-    prompt = update.message.text.lstrip("/prompt")
+    prompt = re.sub(r"^/prompt(@@delduca_bot)?\s", "", update.message.text)
 
     if not prompt:
         return
 
     update.message.reply_text(
-        escape_markdown(
-            openai.Completion.create(
-                prompt=prompt,
-                model="text-davinci-003",
-                max_tokens=2048,
-            )
-            .choices[0]
-            .text,
-            version=2,
-        ),
-        parse_mode=ParseMode.MARKDOWN_V2,
+        openai.Completion.create(
+            prompt=prompt,
+            model="text-davinci-003",
+            max_tokens=2048,
+        )
+        .choices[0]
+        .text
     )
 
 
