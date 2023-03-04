@@ -25,6 +25,7 @@ from telegram.ext import CommandHandler
 from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
+from telegram.utils.helpers import escape_markdown
 from werkzeug.wrappers import Response
 
 app = Flask(__name__)
@@ -219,13 +220,16 @@ def prompt(update: Update, context: CallbackContext) -> None:
         return
 
     update.message.reply_text(
-        openai.Completion.create(
-            prompt=prompt,
-            model="text-davinci-003",
-            max_tokens=2048,
-        )
-        .choices[0]
-        .text,
+        escape_markdown(
+            openai.Completion.create(
+                prompt=prompt,
+                model="text-davinci-003",
+                max_tokens=2048,
+            )
+            .choices[0]
+            .text,
+            version=2,
+        ),
         parse_mode=ParseMode.MARKDOWN_V2,
     )
 
