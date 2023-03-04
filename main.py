@@ -9,6 +9,8 @@ from pathlib import Path
 from random import choice
 from random import random
 
+from lxml.html.clean import Cleaner
+
 import openai
 import yaml
 from flask import Flask
@@ -219,7 +221,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not prompt:
         return
 
-    html = markdown(
+    unsafe_html = markdown(
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
@@ -230,6 +232,8 @@ def prompt(update: Update, context: CallbackContext) -> None:
         extensions=["fenced_code"],
     )
 
+    cleaner = Cleaner(remove_tags=("p"))
+    html = cleaner.clean_html(unsafe_html)
     update.message.reply_text(html, parse_mode=ParseMode.HTML)
 
 
