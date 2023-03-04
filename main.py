@@ -232,7 +232,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         extensions=["fenced_code"],
     )
 
-    cleaner = Cleaner(remove_tags=("p"))
+    cleaner = Cleaner(remove_tags=("p", "div"))
     html = cleaner.clean_html(unsafe_html)
     update.message.reply_text(html, parse_mode=ParseMode.HTML)
 
