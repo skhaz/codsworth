@@ -16,6 +16,7 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
+from markdown import markdown
 from telegram import Bot
 from telegram import ParseMode
 from telegram import Update
@@ -213,18 +214,22 @@ def tramp(update: Update, context: CallbackContext) -> None:
 
 
 def prompt(update: Update, context: CallbackContext) -> None:
-    text = update.message.text.lstrip("/prompt")
+    prompt = update.message.text.lstrip("/prompt")
 
-    if not text:
+    if not prompt:
         return
 
-    response = openai.Completion.create(
-        prompt=text,
-        model="text-davinci-003",
-        max_tokens=2048,
+    html = markdown(
+        openai.Completion.create(
+            prompt=prompt,
+            model="text-davinci-003",
+            max_tokens=2048,
+        )
+        .choices[0]
+        .text
     )
 
-    update.message.reply_text(response.choices[0].text)
+    update.message.reply_text(html, parse_mode=ParseMode.HTML)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
