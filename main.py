@@ -226,7 +226,8 @@ def prompt(update: Update, context: CallbackContext) -> None:
             max_tokens=2048,
         )
         .choices[0]
-        .text
+        .text,
+        extensions=["fenced_code"],
     )
 
     update.message.reply_text(html, parse_mode=ParseMode.HTML)
