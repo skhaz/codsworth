@@ -231,7 +231,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         .text
     )
 
-    cleaner = Cleaner(remove_tags=("p", "div"))
+    cleaner = Cleaner(remove_tags=("br", "div", "p"))
     html = cleaner.clean_html(unsafe_html)
     update.message.reply_text(html, parse_mode=ParseMode.HTML)
 
