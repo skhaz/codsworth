@@ -2,7 +2,6 @@ import functools
 import http
 import mimetypes
 import os
-import re
 import subprocess
 import unicodedata
 from html import escape
