@@ -222,15 +222,13 @@ def prompt(update: Update, context: CallbackContext) -> None:
         return
 
     update.message.reply_text(
-        markdown(
-            openai.Completion.create(
-                prompt=prompt,
-                model="text-davinci-003",
-                max_tokens=2048,
-            )
-            .choices[0]
-            .text
-        ),
+        openai.Completion.create(
+            prompt=prompt,
+            model="text-davinci-003",
+            max_tokens=2048,
+        )
+        .choices[0]
+        .text,
         parse_mode=ParseMode.MARKDOWN_V2,
     )
 
