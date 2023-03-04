@@ -2,14 +2,13 @@ import functools
 import http
 import mimetypes
 import os
+import re
 import subprocess
 import unicodedata
 from html import escape
 from pathlib import Path
 from random import choice
 from random import random
-
-from lxml.html.clean import Cleaner
 
 import openai
 import yaml
@@ -18,6 +17,7 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
+from lxml.html.clean import Cleaner
 from markdown import markdown
 from telegram import Bot
 from telegram import ParseMode
@@ -231,8 +231,14 @@ def prompt(update: Update, context: CallbackContext) -> None:
         .text
     )
 
-    cleaner = Cleaner(remove_tags=("br", "div", "p"))
+    cleaner = Cleaner(
+        remove_unknown_tags=False,
+        allow_tags=["b", "i", "u", "a", "code", "pre"],
+    )
+
     html = cleaner.clean_html(unsafe_html)
+    html = re.sub(r"^<div>", "", html)
+    html = re.sub(r"</div>$", "", html)
     update.message.reply_text(html, parse_mode=ParseMode.HTML)
 
 
