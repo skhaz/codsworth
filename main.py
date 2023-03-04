@@ -221,26 +221,18 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not prompt:
         return
 
-    unsafe_html = markdown(
-        openai.Completion.create(
-            prompt=prompt,
-            model="text-davinci-003",
-            max_tokens=2048,
-        )
-        .choices[0]
-        .text,
-        extensions=["fenced_code"],
+    update.message.reply_text(
+        markdown(
+            openai.Completion.create(
+                prompt=prompt,
+                model="text-davinci-003",
+                max_tokens=2048,
+            )
+            .choices[0]
+            .text
+        ),
+        parse_mode=ParseMode.MARKDOWN_V2,
     )
-
-    cleaner = Cleaner(
-        remove_unknown_tags=False,
-        allow_tags=["b", "i", "u", "a", "code", "pre"],
-    )
-
-    html = cleaner.clean_html(unsafe_html)
-    html = re.sub(r"^<div>", "", html)
-    html = re.sub(r"</div>$", "", html)
-    update.message.reply_text(html, parse_mode=ParseMode.HTML)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
