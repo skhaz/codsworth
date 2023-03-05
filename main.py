@@ -230,7 +230,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             prompt=prompt,
             model="gpt-3.5-turbo", #model="text-davinci-003",
             best_of=5,
-            max_tokens=2048,
+            max_tokens=4096,
         )
         .choices[0]
         .text
