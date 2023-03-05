@@ -229,6 +229,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
+            best_of=5,
             max_tokens=4096,
         )
         .choices[0]
