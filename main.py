@@ -214,17 +214,12 @@ def tramp(update: Update, context: CallbackContext) -> None:
 
 
 def prompt(update: Update, context: CallbackContext) -> None:
-    message = update.message.reply_to_message or update.message
-
-    if not message:
-        return
-
-    prompt = re.sub(r"^/prompt(@delduca_bot)?$", "", message.text)
+    prompt = re.sub(r"^/prompt(@delduca_bot)?$", "", update.message.text)
 
     if not prompt:
         return
 
-    message.reply_text(
+    update.message.reply_text(
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
