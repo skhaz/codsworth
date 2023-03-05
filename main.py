@@ -2,9 +2,9 @@ import functools
 import http
 import mimetypes
 import os
+import re
 import subprocess
 import unicodedata
-import re
 from html import escape
 from pathlib import Path
 from random import choice
@@ -26,7 +26,6 @@ from telegram.ext import CommandHandler
 from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
-from telegram.utils.helpers import escape_markdown
 from werkzeug.wrappers import Response
 
 app = Flask(__name__)
@@ -228,7 +227,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
     message.reply_text(
         openai.Completion.create(
             prompt=prompt,
-            model="gpt-3.5-turbo", #model="text-davinci-003",
+            model="gpt-3.5-turbo",  # model="text-davinci-003",
             best_of=5,
             max_tokens=4096,
         )
