@@ -228,7 +228,6 @@ def prompt(update: Update, context: CallbackContext) -> None:
     message.reply_text(
         openai.Completion.create(
             prompt=prompt,
-            context=update.effective_chat.id,
             model="text-davinci-003",
             max_tokens=4096,
         )
