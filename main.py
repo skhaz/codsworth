@@ -20,7 +20,7 @@ from google.cloud.vision import ImageAnnotatorClient
 from telegram import Bot
 from telegram import ParseMode
 from telegram import Update
-from telegram.constants import MessageLimit
+from telegram import MAX_MESSAGE_LENGTH
 from telegram.error import TelegramError
 from telegram.ext import CallbackContext
 from telegram.ext import CommandHandler
@@ -228,7 +228,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             max_tokens=1024,
         )
         .choices[0]
-        .text[: MessageLimit.MAX_TEXT_LENGTH]
+        .text[: MAX_MESSAGE_LENGTH]
     )
 
 
