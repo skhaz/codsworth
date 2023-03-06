@@ -224,8 +224,8 @@ def prompt(update: Update, context: CallbackContext) -> None:
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
-            best_of=5,
-            max_tokens=2048,
+            best_of=3,
+            max_tokens=3000,
         )
         .choices[0]
         .text[:MAX_MESSAGE_LENGTH]
