@@ -20,6 +20,7 @@ from google.cloud.vision import ImageAnnotatorClient
 from telegram import Bot
 from telegram import ParseMode
 from telegram import Update
+from telegram.constants import MessageLimit
 from telegram.error import TelegramError
 from telegram.ext import CallbackContext
 from telegram.ext import CommandHandler
@@ -223,11 +224,11 @@ def prompt(update: Update, context: CallbackContext) -> None:
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
-            best_of=3,
-            max_tokens=2048,
+            best_of=5,
+            max_tokens=1024,
         )
         .choices[0]
-        .text
+        .text[: MessageLimit.MAX_TEXT_LENGTH]
     )
 
 
