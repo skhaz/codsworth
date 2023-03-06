@@ -225,7 +225,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             prompt=prompt,
             model="text-davinci-003",
             best_of=5,
-            max_tokens=1024,
+            max_tokens=2048,
         )
         .choices[0]
         .text[:MAX_MESSAGE_LENGTH]
