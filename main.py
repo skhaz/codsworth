@@ -147,7 +147,7 @@ def meme(update: Update, context: CallbackContext) -> None:
             return
 
 
-def enter(update: Update, context: CallbackContext) -> None:
+def on_enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         profile_photos = member.get_profile_photos()
 
@@ -256,22 +256,31 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not prompt:
         return
 
-    try:
-        message.reply_text(
-            openai.Completion.create(
-                prompt=prompt,
-                model="text-davinci-003",
-                best_of=3,
-                max_tokens=3000,
-            )
-            .choices[0]
-            .text[:MAX_MESSAGE_LENGTH]
+    message.reply_text(
+        openai.Completion.create(
+            prompt=prompt,
+            model="text-davinci-003",
+            best_of=3,
+            max_tokens=3000,
         )
-    except:  # noqa
-        filename = choice(list(Path("assets/died").iterdir()))
+        .choices[0]
+        .text[:MAX_MESSAGE_LENGTH]
+    )
 
-        with open(filename, "rb") as f:
-            message.reply_photo(f)
+
+def error_handler(update: object, context: CallbackContext) -> None:
+    if not isinstance(update, Update):
+        return
+
+    message = update.message
+
+    if not message:
+        return
+
+    filename = choice(list(Path("assets/died").iterdir()))
+
+    with open(filename, "rb") as f:
+        message.reply_photo(f)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
@@ -279,13 +288,14 @@ bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 dispatcher = Dispatcher(bot=bot, update_queue=Queue(), use_context=True, workers=0)
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, meme))
-dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, enter))
+dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, on_enter))
 dispatcher.add_handler(CommandHandler("fortune", fortune))
 dispatcher.add_handler(CommandHandler("repost", repost))
 dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
+dispatcher.add_error_handler(error_handler)
 
 
 @app.post("/")
