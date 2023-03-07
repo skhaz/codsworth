@@ -120,7 +120,6 @@ def sed(update: Update, context: CallbackContext) -> None:
         context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
 
-@typing
 def meme(update: Update, context: CallbackContext) -> None:
     message = update.message
 
@@ -147,7 +146,6 @@ def meme(update: Update, context: CallbackContext) -> None:
             return
 
 
-@typing
 def enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         photos = member.get_profile_photos().photos
@@ -173,7 +171,6 @@ def enter(update: Update, context: CallbackContext) -> None:
                 break
 
 
-@typing
 def fortune(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message or update.message
 
@@ -183,7 +180,6 @@ def fortune(update: Update, context: CallbackContext) -> None:
     message.reply_text(choice(fortunes))
 
 
-@typing
 def repost(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message
 
@@ -213,7 +209,6 @@ def rules(update: Update, context: CallbackContext) -> None:
         message.reply_video(f)
 
 
-@typing
 def slap(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message
 
@@ -221,7 +216,6 @@ def slap(update: Update, context: CallbackContext) -> None:
         message.reply_text(choice(slaps))
 
 
-@typing
 def tramp(update: Update, context: CallbackContext) -> None:
     message = update.message
 
