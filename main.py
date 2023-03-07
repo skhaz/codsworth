@@ -156,6 +156,10 @@ def enter(update: Update, context: CallbackContext) -> None:
 
 def fortune(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message or update.message
+
+    if not message:
+        return
+
     message.reply_text(choice(fortunes))
 
 
@@ -200,27 +204,32 @@ def tramp(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    reply_to_message = update.message.reply_to_message
+    reply_to_message = message.reply_to_message
 
     if not reply_to_message:
         return
-
-    with open(Path(r"assets/to get by/0.mp4"), "rb") as f:
-        reply_to_message.reply_video(f)
 
     try:
         message.delete()
     except TelegramError:
         pass
 
+    with open(Path(r"assets/to get by/0.mp4"), "rb") as f:
+        reply_to_message.reply_video(f)
+
 
 def prompt(update: Update, context: CallbackContext) -> None:
-    prompt = re.sub(r"^/prompt(@delduca_bot)?$", "", update.message.text)
+    message = update.message
+
+    if not message:
+        return
+
+    prompt = re.sub(r"^/prompt(@delduca_bot)?$", "", message.text)
 
     if not prompt:
         return
 
-    update.message.reply_text(
+    message.reply_text(
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
