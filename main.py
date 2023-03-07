@@ -15,6 +15,7 @@ import openai
 import yaml
 from flask import Flask
 from flask import request
+from flask import make_response
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
@@ -289,4 +290,7 @@ dispatcher.add_handler(CommandHandler("prompt", prompt))
 def index() -> Response:
     dispatcher.process_update(Update.de_json(request.get_json(force=True), bot))
 
-    return "", http.HTTPStatus.NO_CONTENT
+    response = make_response()
+    response.status_code = http.HTTPStatus.NO_CONTENT
+    response.mimetype = "application/json"
+    return response
