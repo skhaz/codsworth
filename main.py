@@ -148,9 +148,12 @@ def meme(update: Update, context: CallbackContext) -> None:
 
 def enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
-        photos = member.get_profile_photos().photos
+        profile_photos = member.get_profile_photos()
 
-        for photo in photos:
+        if not profile_photos:
+            continue
+
+        for photo in profile_photos.photos:
             buffer = context.bot.getFile(photo[-1].file_id).download_as_bytearray()
             image = Image(content=bytes(buffer))
 
@@ -189,6 +192,10 @@ def repost(update: Update, context: CallbackContext) -> None:
     assets = Path("assets/repost")
     filename = choice(list(assets.iterdir()))
     mimetype, _ = mimetypes.guess_type(filename)
+
+    if not mimetype:
+        return
+
     reply_with = getattr(message, f"reply_{mimetype.split('/')[0]}")
 
     with open(filename, "rb") as f:
