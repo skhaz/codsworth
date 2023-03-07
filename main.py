@@ -1,5 +1,4 @@
 import functools
-import http
 import mimetypes
 import os
 import re
@@ -7,6 +6,7 @@ import subprocess
 import unicodedata
 from functools import wraps
 from html import escape
+from http import HTTPStatus
 from pathlib import Path
 from random import choice
 from random import random
@@ -14,8 +14,8 @@ from random import random
 import openai
 import yaml
 from flask import Flask
-from flask import request
 from flask import make_response
+from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
@@ -291,6 +291,6 @@ def index() -> Response:
     dispatcher.process_update(Update.de_json(request.get_json(force=True), bot))
 
     response = make_response()
-    response.status_code = http.HTTPStatus.NO_CONTENT
+    response.status_code = HTTPStatus.NO_CONTENT
     response.mimetype = "application/json"
     return response
