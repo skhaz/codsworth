@@ -229,16 +229,22 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not prompt:
         return
 
-    message.reply_text(
-        openai.Completion.create(
-            prompt=prompt,
-            model="text-davinci-003",
-            best_of=3,
-            max_tokens=3000,
+    try:
+        message.reply_text(
+            openai.Completion.create(
+                prompt=prompt,
+                model="text-davinci-003",
+                best_of=3,
+                max_tokens=3000,
+            )
+            .choices[0]
+            .text[:MAX_MESSAGE_LENGTH]
         )
-        .choices[0]
-        .text[:MAX_MESSAGE_LENGTH]
-    )
+    except:  # noqa
+        filename = choice(list(Path("assets/died").iterdir()))
+
+        with open(filename, "rb") as f:
+            message.reply_photo(f)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
