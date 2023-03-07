@@ -117,8 +117,13 @@ def sed(update: Update, context: CallbackContext) -> None:
             reply_to.reply_text(html, parse_mode=ParseMode.HTML)
 
     if not success:
+        chat = update.effective_chat
+
+        if not chat:
+            return
+
         reply = f"Ihhh... @{author} não sabe /regex/! 😂"
-        context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
+        context.bot.send_message(chat_id=chat.id, text=reply)
 
 
 def meme(update: Update, context: CallbackContext) -> None:
@@ -276,11 +281,13 @@ def error_handler(update: object, context: CallbackContext) -> None:
 
     if not message:
         return
+    
+    author = message.from_user.username
 
     filename = choice(list(Path("assets/died").iterdir()))
 
     with open(filename, "rb") as f:
-        context.bot.send_photo(message.chat_id, photo=f)
+        context.bot.send_photo(message.chat_id, caption=f"{author} me causou cancer.", photo=f)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
