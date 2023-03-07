@@ -272,6 +272,9 @@ def prompt(update: Update, context: CallbackContext) -> None:
         .text[:MAX_MESSAGE_LENGTH]
     )
 
+def crash(update: Update, context: CallbackContext) -> None:
+    raise TypeError()
+
 
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
@@ -302,6 +305,7 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
+dispatcher.add_handler(CommandHandler("crash", crash))
 dispatcher.add_error_handler(error_handler)
 
 
