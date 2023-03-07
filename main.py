@@ -20,7 +20,6 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
-from telegram import MAX_MESSAGE_LENGTH
 from telegram import Bot
 from telegram import ChatAction
 from telegram import ParseMode
@@ -266,7 +265,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             max_tokens=3000,
         )
         .choices[0]
-        .text[:MAX_MESSAGE_LENGTH]
+        .text
     )
 
 
