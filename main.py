@@ -272,7 +272,7 @@ def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
 
-    message = update.message
+    message = update.effective_message
 
     if not message:
         return
@@ -280,7 +280,7 @@ def error_handler(update: object, context: CallbackContext) -> None:
     filename = choice(list(Path("assets/died").iterdir()))
 
     with open(filename, "rb") as f:
-        message.reply_photo(f)
+        context.bot.send_photo(message.chat_id, photo=f)
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
