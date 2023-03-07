@@ -8,6 +8,7 @@ from functools import wraps
 from html import escape
 from http import HTTPStatus
 from pathlib import Path
+from queue import Queue
 from random import choice
 from random import random
 
@@ -275,7 +276,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
-dispatcher = Dispatcher(bot=bot, update_queue=None)
+dispatcher = Dispatcher(bot=bot, update_queue=Queue(), use_context=True, workers=0)
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, meme))
 dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, enter))
