@@ -5,6 +5,7 @@ import os
 import re
 import subprocess
 import unicodedata
+from functools import wraps
 from html import escape
 from pathlib import Path
 from random import choice
@@ -19,6 +20,7 @@ from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
 from telegram import MAX_MESSAGE_LENGTH
 from telegram import Bot
+from telegram import ChatAction
 from telegram import ParseMode
 from telegram import Update
 from telegram.error import TelegramError
@@ -65,6 +67,20 @@ def remove_unicode(string: str) -> str:
     return functools.reduce(lambda x, f: f(x), funcs, string)
 
 
+def typing(func):
+    @wraps(func)
+    def wrapper(update, context, *args, **kwargs):
+        context.bot.send_chat_action(
+            chat_id=update.effective_message.chat_id,
+            action=ChatAction.TYPING,
+        )
+
+        return func(update, context, *args, **kwargs)
+
+    return wrapper
+
+
+@typing
 def sed(update: Update, context: CallbackContext) -> None:
     message = update.message
     reply_to = message.reply_to_message
@@ -103,6 +119,7 @@ def sed(update: Update, context: CallbackContext) -> None:
         context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
 
+@typing
 def meme(update: Update, context: CallbackContext) -> None:
     message = update.message
 
@@ -129,6 +146,7 @@ def meme(update: Update, context: CallbackContext) -> None:
             return
 
 
+@typing
 def enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         photos = member.get_profile_photos().photos
@@ -154,6 +172,7 @@ def enter(update: Update, context: CallbackContext) -> None:
                 break
 
 
+@typing
 def fortune(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message or update.message
 
@@ -163,6 +182,7 @@ def fortune(update: Update, context: CallbackContext) -> None:
     message.reply_text(choice(fortunes))
 
 
+@typing
 def repost(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message
 
@@ -178,6 +198,7 @@ def repost(update: Update, context: CallbackContext) -> None:
         reply_with(f)
 
 
+@typing
 def rules(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message or update.message
 
@@ -191,6 +212,7 @@ def rules(update: Update, context: CallbackContext) -> None:
         message.reply_video(f)
 
 
+@typing
 def slap(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message
 
@@ -198,6 +220,7 @@ def slap(update: Update, context: CallbackContext) -> None:
         message.reply_text(choice(slaps))
 
 
+@typing
 def tramp(update: Update, context: CallbackContext) -> None:
     message = update.message
 
@@ -218,6 +241,7 @@ def tramp(update: Update, context: CallbackContext) -> None:
         reply_to_message.reply_video(f)
 
 
+@typing
 def prompt(update: Update, context: CallbackContext) -> None:
     message = update.message
 
