@@ -146,7 +146,6 @@ def meme(update: Update, context: CallbackContext) -> None:
 
     if max([fuzz.ratio(h, text) for h in helps]) > 70:
         filename = Path(r"assets/to get by/0.mp4")
-
         with open(filename, "rb") as f:
             message.reply_video(f)
             return
@@ -203,7 +202,6 @@ def repost(update: Update, context: CallbackContext) -> None:
         return
 
     reply_with = getattr(message, f"reply_{mimetype.split('/')[0]}")
-
     with open(filename, "rb") as f:
         reply_with(f)
 
@@ -217,7 +215,6 @@ def rules(update: Update, context: CallbackContext) -> None:
 
     assets = Path("assets/rules")
     filename = choice(list(assets.iterdir()))
-
     with open(filename, "rb") as f:
         message.reply_video(f)
 
@@ -283,9 +280,7 @@ def error_handler(update: object, context: CallbackContext) -> None:
         return
     
     author = message.from_user.username
-
     filename = choice(list(Path("assets/died").iterdir()))
-
     with open(filename, "rb") as f:
         context.bot.send_photo(message.chat_id, caption=f"@{author} me causou câncer.", photo=f)
 
