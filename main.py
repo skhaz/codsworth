@@ -281,8 +281,6 @@ def prompt(update: Update, context: CallbackContext) -> None:
 def error_handler(update: object, context: CallbackContext) -> None:
     logger.error(msg="Exception while handling an update:", exc_info=context.error)
 
-    # "".join(traceback.format_exception(None, context.error, context.error.__traceback__))
-
     if not isinstance(update, Update):
         return
 
