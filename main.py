@@ -269,7 +269,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
-            temperature=0.3,
+            temperature=0.1,
             best_of=3,
             max_tokens=3000,
         )
