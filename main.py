@@ -261,8 +261,10 @@ def prompt(update: Update, context: CallbackContext) -> None:
         openai.Completion.create(
             prompt=prompt,
             model="text-davinci-003",
+            temperature="0.8",
             best_of=3,
             max_tokens=3000,
+            timeout=60
         )
         .choices[0]
         .text
