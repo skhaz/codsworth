@@ -1,8 +1,10 @@
 import functools
+import logging
 import mimetypes
 import os
 import re
 import subprocess
+import traceback
 import unicodedata
 from functools import wraps
 from html import escape
@@ -40,6 +42,12 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 mimetypes.init()
 
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+
+logger = logging.getLogger(__name__)
 
 with open("memes.yaml", "rt", encoding="utf-8") as f:
     memes = yaml.safe_load(f)
@@ -271,6 +279,10 @@ def prompt(update: Update, context: CallbackContext) -> None:
 
 
 def error_handler(update: object, context: CallbackContext) -> None:
+    logger.error(msg="Exception while handling an update:", exc_info=context.error)
+
+    # "".join(traceback.format_exception(None, context.error, context.error.__traceback__))
+
     if not isinstance(update, Update):
         return
 
@@ -278,11 +290,13 @@ def error_handler(update: object, context: CallbackContext) -> None:
 
     if not message:
         return
-    
+
     author = message.from_user.username
     filename = choice(list(Path("assets/died").iterdir()))
     with open(filename, "rb") as f:
-        context.bot.send_photo(message.chat_id, caption=f"@{author} me causou câncer.", photo=f)
+        context.bot.send_photo(
+            message.chat_id, caption=f"@{author} me causou câncer.", photo=f
+        )
 
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
