@@ -283,7 +283,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
                     prompt=prompt,
                     model="text-davinci-003",
                     best_of=3,
-                    max_tokens=1000,
+                    max_tokens=3000,
                 )
                 .choices[0]
                 .text
@@ -292,6 +292,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         filename = choice(list(Path("assets/hurried").iterdir()))
         with open(filename, "rb") as f:
             message.reply_photo(f)
+            message.reply_chat_action
 
 
 def error_handler(update: object, context: CallbackContext) -> None:
