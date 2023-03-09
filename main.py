@@ -260,7 +260,6 @@ def tramp(update: Update, context: CallbackContext) -> None:
 @typing
 def prompt(update: Update, context: CallbackContext) -> None:
     message = update.message
-    author = message.from_user.username
 
     if not message:
         return
@@ -274,7 +273,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         with RateLimit(
             redis_pool=redis_pool,
             resource="prompt",
-            client=author,
+            client=message.from_user.username,
             max_requests=1,
             expire=60 * 5,
         ):
