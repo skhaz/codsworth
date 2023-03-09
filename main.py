@@ -4,7 +4,6 @@ import mimetypes
 import os
 import re
 import subprocess
-import traceback
 import unicodedata
 from functools import wraps
 from html import escape
@@ -22,6 +21,9 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
+from redis import ConnectionPool
+from redis_rate_limit import RateLimit
+from redis_rate_limit import TooManyRequests
 from telegram import Bot
 from telegram import ChatAction
 from telegram import ParseMode
@@ -33,13 +35,14 @@ from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
 from werkzeug.wrappers import Response
-from redis_rate_limit import RateLimit, TooManyRequests
 
 app = Flask(__name__)
 
 vision = ImageAnnotatorClient()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+redis_pool = ConnectionPool.from_url(os.environ["REDIS_DSN"])
+
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 mimetypes.init()
 
@@ -268,17 +271,23 @@ def prompt(update: Update, context: CallbackContext) -> None:
         return
 
     try:
-        #with RateLimit(resource='users_list', client=author, max_requests=1, expire=60 * 5):
-        message.reply_text(
-            openai.Completion.create(
-                prompt=prompt,
-                model="text-davinci-003",
-                best_of=3,
-                max_tokens=1000,
+        with RateLimit(
+            redis_pool=redis_pool,
+            resource="users_list",
+            client=author,
+            max_requests=1,
+            expire=60 * 5,
+        ):
+            message.reply_text(
+                openai.Completion.create(
+                    prompt=prompt,
+                    model="text-davinci-003",
+                    best_of=3,
+                    max_tokens=1000,
+                )
+                .choices[0]
+                .text
             )
-            .choices[0]
-            .text
-        )
     except TooManyRequests:
         message.reply_text("Calma aí cowboy!")
 
@@ -301,7 +310,8 @@ def error_handler(update: object, context: CallbackContext) -> None:
             message.chat_id, caption=f"@{author} me causou câncer.", photo=f
         )
 
-x:int = "vlw guido"
+
+x: int = "vlw guido"
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
