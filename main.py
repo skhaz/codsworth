@@ -268,17 +268,17 @@ def prompt(update: Update, context: CallbackContext) -> None:
         return
 
     try:
-        with RateLimit(resource='users_list', client=author, max_requests=1, expire=60 * 5):
-            message.reply_text(
-                openai.Completion.create(
-                    prompt=prompt,
-                    model="text-davinci-003",
-                    best_of=3,
-                    max_tokens=1000,
-                )
-                .choices[0]
-                .text
+        #with RateLimit(resource='users_list', client=author, max_requests=1, expire=60 * 5):
+        message.reply_text(
+            openai.Completion.create(
+                prompt=prompt,
+                model="text-davinci-003",
+                best_of=3,
+                max_tokens=1000,
             )
+            .choices[0]
+            .text
+        )
     except TooManyRequests:
         message.reply_text("Calma aí cowboy!")
 
