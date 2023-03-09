@@ -273,7 +273,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
     try:
         with RateLimit(
             redis_pool=redis_pool,
-            resource="users_list",
+            resource="prompt",
             client=author,
             max_requests=1,
             expire=60 * 5,
@@ -307,7 +307,9 @@ def error_handler(update: object, context: CallbackContext) -> None:
     filename = choice(list(Path("assets/died").iterdir()))
     with open(filename, "rb") as f:
         context.bot.send_photo(
-            message.chat_id, caption=f"@{author} me causou câncer.", photo=f
+            message.chat_id,
+            caption=f"@{author} me causou câncer.",
+            photo=f,
         )
 
 
