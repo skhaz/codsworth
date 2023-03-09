@@ -272,7 +272,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
     try:
         with RateLimit(
             redis_pool=redis_pool,
-            resource="prompt",
+            resource=prompt.__name__,
             client=message.from_user.username,
             max_requests=1,
             expire=60 * 5,
