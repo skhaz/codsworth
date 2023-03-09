@@ -311,8 +311,6 @@ def error_handler(update: object, context: CallbackContext) -> None:
         )
 
 
-x: int = "vlw guido"
-
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
 dispatcher = Dispatcher(bot=bot, update_queue=Queue())
