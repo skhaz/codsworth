@@ -264,9 +264,9 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    prompt = re.sub(r"^/prompt(@delduca_bot)?$", "", message.text)
+    text = re.sub(r"^/prompt(@delduca_bot)?$", "", message.text)
 
-    if not prompt:
+    if not text:
         return
 
     try:
@@ -279,7 +279,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         ):
             message.reply_text(
                 openai.Completion.create(
-                    prompt=prompt,
+                    prompt=text,
                     model="text-davinci-003",
                     best_of=3,
                     max_tokens=3000,
