@@ -289,10 +289,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
                 .text
             )
     except TooManyRequests:
-        filename = choice(list(Path("assets/hurried").iterdir()))
-        with open(filename, "rb") as f:
-            message.reply_photo(f)
-            message.reply_chat_action
+        pass
 
 
 def error_handler(update: object, context: CallbackContext) -> None:
