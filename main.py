@@ -33,6 +33,7 @@ from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
 from werkzeug.wrappers import Response
+from redis_rate_limit import RateLimit, TooManyRequests
 
 app = Flask(__name__)
 
@@ -256,6 +257,7 @@ def tramp(update: Update, context: CallbackContext) -> None:
 @typing
 def prompt(update: Update, context: CallbackContext) -> None:
     message = update.message
+    author = message.from_user.username
 
     if not message:
         return
@@ -265,16 +267,20 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not prompt:
         return
 
-    message.reply_text(
-        openai.Completion.create(
-            prompt=prompt,
-            model="text-davinci-003",
-            best_of=3,
-            max_tokens=1000,
-        )
-        .choices[0]
-        .text
-    )
+    try:
+        with RateLimit(resource='users_list', client=author, max_requests=1, expire=60 * 5):
+            message.reply_text(
+                openai.Completion.create(
+                    prompt=prompt,
+                    model="text-davinci-003",
+                    best_of=3,
+                    max_tokens=1000,
+                )
+                .choices[0]
+                .text
+            )
+    except TooManyRequests:
+        message.reply_text("Calma aí cowboy!")
 
 
 def error_handler(update: object, context: CallbackContext) -> None:
@@ -295,6 +301,7 @@ def error_handler(update: object, context: CallbackContext) -> None:
             message.chat_id, caption=f"@{author} me causou câncer.", photo=f
         )
 
+x:int = "vlw guido"
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
