@@ -264,22 +264,22 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    text = re.sub(r"^/prompt(@delduca_bot)?$", "", message.text)
+    prompt = re.sub(r"^/prompt(@delduca_bot)?$", "", message.text)
 
-    if not text:
+    if not prompt:
         return
 
     try:
         with RateLimit(
             redis_pool=redis_pool,
-            resource=prompt.__name__,
+            resource=message.chat_id,
             client=message.from_user.username,
             max_requests=1,
             expire=60 * 5,
         ):
             message.reply_text(
                 openai.Completion.create(
-                    prompt=text,
+                    prompt=prompt,
                     model="text-davinci-003",
                     best_of=3,
                     max_tokens=3000,
