@@ -288,7 +288,24 @@ def prompt(update: Update, context: CallbackContext) -> None:
                     max_tokens=3000,
                 )
                 .choices[0]
-                .text,
+                .text.replace(r"/\_/g", "\\_")
+                .replace(r"/\*/g", "\\*")
+                .replace(r"/\[/g", "\\[")
+                .replace(r"/\]/g", "\\]")
+                .replace(r"/\(/g", "\\(")
+                .replace(r"/\)/g", "\\)")
+                .replace(r"/\~/g", "\\~")
+                .replace(r"/\`/g", "\\`")
+                .replace(r"/\>/g", "\\>")
+                .replace(r"/\#/g", "\\#")
+                .replace(r"/\+/g", "\\+")
+                .replace(r"/\-/g", "\\-")
+                .replace(r"/\=/g", "\\=")
+                .replace(r"/\|/g", "\\|")
+                .replace(r"/\{/g", "\\{")
+                .replace(r"/\}/g", "\\}")
+                .replace(r"/\./g", "\\.")
+                .replace(r"/\!/g", "\\!"),
                 parse_mode=ParseMode.MARKDOWN_V2,
             )
     except TooManyRequests:
