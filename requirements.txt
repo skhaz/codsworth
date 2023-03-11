@@ -1,9 +1,10 @@
+captcha==0.4
 flask==2.2.3
 fuzzywuzzy==0.18.0
 google-cloud-vision==3.4.0
 gunicorn==20.1.0
 levenshtein==0.20.9
-openai==0.27.0
+openai==0.27.2
 python-redis-rate-limit==0.0.8
 python-telegram-bot==13.15
 pyyaml==6.0

@@ -1,4 +1,5 @@
 import functools
+import io
 import mimetypes
 import os
 import re
@@ -15,6 +16,7 @@ from random import random
 import openai
 import sentry_sdk
 import yaml
+from captcha.image import ImageCaptcha
 from flask import Flask
 from flask import make_response
 from flask import request
@@ -22,6 +24,7 @@ from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
 from redis import ConnectionPool
+from redis import Redis
 from redis_rate_limit import RateLimit
 from redis_rate_limit import TooManyRequests
 from telegram import Bot
@@ -41,6 +44,7 @@ app = Flask(__name__)
 vision = ImageAnnotatorClient()
 
 redis_pool = ConnectionPool.from_url(os.environ["REDIS_DSN"])
+redis = Redis(connection_pool=redis_pool)
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
@@ -160,6 +164,13 @@ def meme(update: Update, context: CallbackContext) -> None:
 def on_enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         profile_photos = member.get_profile_photos()
+
+        caption = f"{update.message.chat_id}:{member.username}"
+
+        buffer = io.BytesIO()
+        captcha = ImageCaptcha()
+        captcha.write("1234", buffer)
+        update.message.reply_photo(buffer, caption=caption)
 
         if not profile_photos:
             continue
