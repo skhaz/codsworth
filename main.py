@@ -83,6 +83,11 @@ def remove_unicode(string: str) -> str:
     return functools.reduce(lambda x, f: f(x), funcs, string)
 
 
+def escape_markdown(text: str) -> str:
+    escape_chars = r"\_*[]()~`>#+-=|{}.!"
+    return re.sub(f"([{re.escape(escape_chars)}])", r"\\\1", text)
+
+
 def typing(func):
     @wraps(func)
     def wrapper(update, context, *args, **kwargs):
@@ -281,31 +286,16 @@ def prompt(update: Update, context: CallbackContext) -> None:
             expire=60 * 5,
         ):
             message.reply_text(
-                openai.Completion.create(
-                    prompt=prompt,
-                    model="text-davinci-003",
-                    best_of=3,
-                    max_tokens=3000,
-                )
-                .choices[0]
-                .text.replace(r"/\_/g", "\\_")
-                .replace(r"/\*/g", "\\*")
-                .replace(r"/\[/g", "\\[")
-                .replace(r"/\]/g", "\\]")
-                .replace(r"/\(/g", "\\(")
-                .replace(r"/\)/g", "\\)")
-                .replace(r"/\~/g", "\\~")
-                .replace(r"/\`/g", "\\`")
-                .replace(r"/\>/g", "\\>")
-                .replace(r"/\#/g", "\\#")
-                .replace(r"/\+/g", "\\+")
-                .replace(r"/\-/g", "\\-")
-                .replace(r"/\=/g", "\\=")
-                .replace(r"/\|/g", "\\|")
-                .replace(r"/\{/g", "\\{")
-                .replace(r"/\}/g", "\\}")
-                .replace(r"/\./g", "\\.")
-                .replace(r"/\!/g", "\\!"),
+                escape_markdown(
+                    openai.Completion.create(
+                        prompt=prompt,
+                        model="text-davinci-003",
+                        best_of=3,
+                        max_tokens=3000,
+                    )
+                    .choices[0]
+                    .text
+                ),
                 parse_mode=ParseMode.MARKDOWN_V2,
             )
     except TooManyRequests:
