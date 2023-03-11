@@ -1,3 +1,14 @@
 {
-  "python.analysis.typeCheckingMode": "basic"
+  "python.analysis.typeCheckingMode": "basic",
+  "python.formatting.provider": "black",
+  "isort.args": [
+    "--profile",
+    "black",
+    "--force-single-line-imports"
+  ],
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  }
 }
