@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir --requirement requirements.txt
 FROM base
 
 WORKDIR /app
-RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
+RUN apt-get update && apt-get install --yes --no-install-recommends libfreetype6 fontconfig-config sed mime-support libjemalloc2
 COPY --from=builder /opt/venv /opt/venv
 COPY . .
 

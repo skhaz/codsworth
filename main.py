@@ -43,6 +43,8 @@ app = Flask(__name__)
 
 vision = ImageAnnotatorClient()
 
+captcha = ImageCaptcha()
+
 redis_pool = ConnectionPool.from_url(os.environ["REDIS_DSN"])
 redis = Redis(connection_pool=redis_pool)
 
@@ -165,12 +167,18 @@ def on_enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         profile_photos = member.get_profile_photos()
 
-        caption = f"{update.message.chat_id}:{member.username}"
+        chat = update.effective_chat
+
+        if not chat:
+            continue
+
+        # key = f"{update.message.chat_id}:{member.username}"
 
         buffer = io.BytesIO()
-        captcha = ImageCaptcha()
         captcha.write(chars="1234", output=buffer)
-        update.message.reply_photo(buffer, caption=caption)
+        buffer.seek(0)
+        caption = f"@{member.username}"
+        context.bot.send_photo(photo=buffer, caption=caption)
 
         if not profile_photos:
             continue
