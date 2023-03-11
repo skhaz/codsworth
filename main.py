@@ -1,5 +1,4 @@
 import functools
-import io
 import mimetypes
 import os
 import re
@@ -16,7 +15,6 @@ from random import random
 import openai
 import sentry_sdk
 import yaml
-from captcha.image import ImageCaptcha
 from flask import Flask
 from flask import make_response
 from flask import request
@@ -42,8 +40,6 @@ from werkzeug.wrappers import Response
 app = Flask(__name__)
 
 vision = ImageAnnotatorClient()
-
-captcha = ImageCaptcha()
 
 redis_pool = ConnectionPool.from_url(os.environ["REDIS_DSN"])
 redis = Redis(connection_pool=redis_pool)
@@ -324,8 +320,6 @@ dispatcher = Dispatcher(bot=bot, update_queue=Queue())
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, meme))
 dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, on_enter))
-dispatcher.add_handler(MessageHandler(Filters.status_update., on_enter))
-
 dispatcher.add_handler(CommandHandler("fortune", fortune))
 dispatcher.add_handler(CommandHandler("repost", repost))
 dispatcher.add_handler(CommandHandler("rules", rules))
