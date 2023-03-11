@@ -177,8 +177,9 @@ def on_enter(update: Update, context: CallbackContext) -> None:
         buffer = io.BytesIO()
         captcha.write(chars="1234", output=buffer)
         buffer.seek(0)
+        # mention_html(user_id, name)
         caption = f"@{member.username}"
-        context.bot.send_photo(photo=buffer, caption=caption)
+        context.bot.send_photo(chat_id=chat.id, photo=buffer, caption=caption)
 
         if not profile_photos:
             continue
