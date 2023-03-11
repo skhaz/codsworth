@@ -294,11 +294,6 @@ def prompt(update: Update, context: CallbackContext) -> None:
         pass
 
 
-def error(update: Update, context: CallbackContext) -> None:
-    division_by_zero = 1 / 0
-    update.message.reply_text(f"{division_by_zero}")
-
-
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
@@ -337,7 +332,6 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
-dispatcher.add_handler(CommandHandler("error", error))
 dispatcher.add_error_handler(error_handler)
 
 
