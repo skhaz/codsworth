@@ -288,7 +288,8 @@ def prompt(update: Update, context: CallbackContext) -> None:
                     max_tokens=3000,
                 )
                 .choices[0]
-                .text
+                .text,
+                parse_mode=ParseMode.MARKDOWN_V2,
             )
     except TooManyRequests:
         pass
@@ -297,7 +298,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
-    
+
     error = context.error
 
     if not error:
