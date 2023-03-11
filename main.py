@@ -14,6 +14,7 @@ from random import choice
 from random import random
 
 import openai
+import sentry_sdk
 import yaml
 from flask import Flask
 from flask import make_response
@@ -45,6 +46,8 @@ redis_pool = ConnectionPool.from_url(os.environ["REDIS_DSN"])
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 mimetypes.init()
+
+sentry_sdk.init(dsn=os.environ["SENTRY_DSN"], traces_sample_rate=1.0)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -280,7 +283,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             message.reply_text(
                 openai.Completion.create(
                     prompt=prompt,
-                    model="gpt-3.5-turbo",
+                    model="text-davinci-003",
                     best_of=3,
                     max_tokens=3000,
                 )
@@ -291,10 +294,18 @@ def prompt(update: Update, context: CallbackContext) -> None:
         pass
 
 
-def error_handler(update: object, context: CallbackContext) -> None:
-    logger.error(msg="Exception while handling an update:", exc_info=context.error)
+def prompt(update: Update, context: CallbackContext) -> None:
+    division_by_zero = 1 / 0
+    update.message.reply_text(f"{division_by_zero}")
 
+
+def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
+        return
+    
+    error = context.error
+
+    if not error:
         return
 
     message = update.effective_message
@@ -311,6 +322,8 @@ def error_handler(update: object, context: CallbackContext) -> None:
             photo=f,
         )
 
+    raise error
+
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
@@ -324,6 +337,7 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
+dispatcher.add_handler(CommandHandler("error", error))
 dispatcher.add_error_handler(error_handler)
 
 
