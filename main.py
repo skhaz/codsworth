@@ -323,11 +323,12 @@ def error_handler(update: object, context: CallbackContext) -> None:
     author = message.from_user.username
     filename = choice(list(Path("assets/died").iterdir()))
     with open(filename, "rb") as f:
-        context.bot.send_photo(
-            message.chat_id,
-            caption=f"@{author} me causou câncer.",
-            photo=f,
-        )
+        pass
+        # context.bot.send_photo(
+        #     message.chat_id,
+        #     caption=f"@{author} me causou câncer.",
+        #     photo=f,
+        # )
 
     raise error
 
