@@ -1,5 +1,4 @@
 import functools
-import logging
 import mimetypes
 import os
 import re
@@ -47,14 +46,7 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 
 mimetypes.init()
 
-sentry_sdk.init(dsn=os.environ["SENTRY_DSN"], traces_sample_rate=1.0)
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO,
-)
-
-logger = logging.getLogger(__name__)
+sentry_sdk.init(dsn=os.environ["SENTRY_DSN"])
 
 with open("memes.yaml", "rt", encoding="utf-8") as f:
     memes = yaml.safe_load(f)
@@ -81,11 +73,6 @@ def remove_unicode(string: str) -> str:
     ]
 
     return functools.reduce(lambda x, f: f(x), funcs, string)
-
-
-def escape_markdown(text: str) -> str:
-    escape_chars = r"\_*[]()~`>#+-=|{}.!"
-    return re.sub(f"([{re.escape(escape_chars)}])", r"\\\1", text)
 
 
 def typing(func):
@@ -286,17 +273,14 @@ def prompt(update: Update, context: CallbackContext) -> None:
             expire=60 * 5,
         ):
             message.reply_text(
-                escape_markdown(
-                    openai.Completion.create(
-                        prompt=prompt,
-                        model="text-davinci-003",
-                        best_of=3,
-                        max_tokens=3000,
-                    )
-                    .choices[0]
-                    .text
-                ),
-                parse_mode=ParseMode.MARKDOWN_V2,
+                openai.Completion.create(
+                    prompt=prompt,
+                    model="text-davinci-003",
+                    best_of=3,
+                    max_tokens=3000,
+                )
+                .choices[0]
+                .text,
             )
     except TooManyRequests:
         pass
