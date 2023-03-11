@@ -167,20 +167,6 @@ def on_enter(update: Update, context: CallbackContext) -> None:
     for member in update.message.new_chat_members:
         profile_photos = member.get_profile_photos()
 
-        chat = update.effective_chat
-
-        if not chat:
-            continue
-
-        # key = f"{update.message.chat_id}:{member.username}"
-
-        buffer = io.BytesIO()
-        captcha.write(chars="1234", output=buffer)
-        buffer.seek(0)
-        # mention_html(user_id, name)
-        caption = f"@{member.username}"
-        context.bot.send_photo(chat_id=chat.id, photo=buffer, caption=caption)
-
         if not profile_photos:
             continue
 
@@ -205,6 +191,7 @@ def on_enter(update: Update, context: CallbackContext) -> None:
                 break
 
 
+@typing
 def fortune(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message or update.message
 
@@ -232,7 +219,6 @@ def repost(update: Update, context: CallbackContext) -> None:
         reply_with(f)
 
 
-@typing
 def rules(update: Update, context: CallbackContext) -> None:
     message = update.message.reply_to_message or update.message
 
@@ -290,7 +276,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             resource=message.chat_id,
             client=message.from_user.username,
             max_requests=1,
-            expire=60 * 5,
+            expire=60 * 3,
         ):
             message.reply_text(
                 openai.Completion.create(
@@ -323,12 +309,11 @@ def error_handler(update: object, context: CallbackContext) -> None:
     author = message.from_user.username
     filename = choice(list(Path("assets/died").iterdir()))
     with open(filename, "rb") as f:
-        pass
-        # context.bot.send_photo(
-        #     message.chat_id,
-        #     caption=f"@{author} me causou câncer.",
-        #     photo=f,
-        # )
+        context.bot.send_photo(
+            message.chat_id,
+            caption=f"@{author} me causou câncer.",
+            photo=f,
+        )
 
     raise error
 
@@ -339,6 +324,8 @@ dispatcher = Dispatcher(bot=bot, update_queue=Queue())
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, meme))
 dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members, on_enter))
+dispatcher.add_handler(MessageHandler(Filters.status_update., on_enter))
+
 dispatcher.add_handler(CommandHandler("fortune", fortune))
 dispatcher.add_handler(CommandHandler("repost", repost))
 dispatcher.add_handler(CommandHandler("rules", rules))
