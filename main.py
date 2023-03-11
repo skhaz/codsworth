@@ -167,7 +167,7 @@ def on_enter(update: Update, context: CallbackContext) -> None:
 
         caption = f"{update.message.chat_id}:{member.username}"
 
-        buffer = io.StringIO()
+        buffer = io.BytesIO()
         captcha = ImageCaptcha()
         captcha.write(chars="1234", output=buffer)
         update.message.reply_photo(buffer, caption=caption)
