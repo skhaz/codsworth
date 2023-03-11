@@ -294,7 +294,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
         pass
 
 
-def prompt(update: Update, context: CallbackContext) -> None:
+def error(update: Update, context: CallbackContext) -> None:
     division_by_zero = 1 / 0
     update.message.reply_text(f"{division_by_zero}")
 
