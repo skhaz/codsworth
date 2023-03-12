@@ -137,10 +137,8 @@ def sed(update: Update, context: CallbackContext) -> None:
         if not chat:
             return
 
-        reply = (
-            f"Ihhh... {mention_html(user_id=user_id, name=name)} não sabe /regex/! 😂"
-        )
-
+        mention = mention_html(user_id=user_id, name=name)
+        reply = f"Ihhh... {mention} não sabe /regex/! 😂"
         context.bot.send_message(chat_id=chat.id, text=reply, parse_mode=ParseMode.HTML)
 
 
