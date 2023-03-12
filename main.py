@@ -99,9 +99,6 @@ def typing(func):
 def sed(update: Update, context: CallbackContext) -> None:
     message = update.message
     reply_to = message.reply_to_message
-    # author = message.from_user.username
-    user_id = message.from_user.id
-    name = message.from_user.name
 
     if not reply_to:
         return
@@ -137,7 +134,8 @@ def sed(update: Update, context: CallbackContext) -> None:
         if not chat:
             return
 
-        mention = mention_html(user_id=user_id, name=name)
+        user = message.from_user
+        mention = mention_html(user_id=user.id, name=user.name)
         reply = f"Ihhh... {mention} não sabe /regex/! 😂"
         context.bot.send_message(chat_id=chat.id, text=reply, parse_mode=ParseMode.HTML)
 
@@ -296,10 +294,6 @@ def prompt(update: Update, context: CallbackContext) -> None:
         pass
 
 
-def error(update: Update, context: CallbackContext) -> None:
-    raise TypeError("error")
-
-
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
@@ -340,7 +334,6 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
-dispatcher.add_handler(CommandHandler("error", error))
 dispatcher.add_error_handler(error_handler)
 
 
