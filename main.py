@@ -11,6 +11,7 @@ from pathlib import Path
 from queue import Queue
 from random import choice
 from random import random
+from typing import Union
 
 import openai
 import sentry_sdk
@@ -77,6 +78,10 @@ def remove_unicode(string: str) -> str:
     return functools.reduce(lambda x, f: f(x), funcs, string)
 
 
+def mention_html(user_id: Union[int, str], name: str) -> str:
+    return f'<a href="tg://user?id={user_id}">{escape(name)}</a>'
+
+
 def typing(func):
     @wraps(func)
     def wrapper(update, context, *args, **kwargs):
@@ -94,7 +99,9 @@ def typing(func):
 def sed(update: Update, context: CallbackContext) -> None:
     message = update.message
     reply_to = message.reply_to_message
-    author = message.from_user.username
+    # author = message.from_user.username
+    user_id = message.from_user.id
+    name = message.from_user.name
 
     if not reply_to:
         return
@@ -130,8 +137,11 @@ def sed(update: Update, context: CallbackContext) -> None:
         if not chat:
             return
 
-        reply = f"Ihhh... @{author} não sabe /regex/! 😂"
-        context.bot.send_message(chat_id=chat.id, text=reply)
+        reply = (
+            f"Ihhh... {mention_html(user_id=user_id, name=name)} não sabe /regex/! 😂"
+        )
+
+        context.bot.send_message(chat_id=chat.id, text=reply, parse_mode=ParseMode.HTML)
 
 
 def meme(update: Update, context: CallbackContext) -> None:
