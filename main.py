@@ -296,6 +296,10 @@ def prompt(update: Update, context: CallbackContext) -> None:
         pass
 
 
+def error(update: Update, context: CallbackContext) -> None:
+    raise TypeError("error")
+
+
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
@@ -310,13 +314,15 @@ def error_handler(update: object, context: CallbackContext) -> None:
     if not message:
         return
 
-    author = message.from_user.username
+    mention = mention_html(user_id=message.from_user.id, name=message.from_user.name)
+    caption = f"{mention} me causou câncer 💀"
     filename = choice(list(Path("assets/died").iterdir()))
     with open(filename, "rb") as f:
         context.bot.send_photo(
             message.chat_id,
-            caption=f"@{author} me causou câncer.",
+            caption=caption,
             photo=f,
+            parse_mode=ParseMode.HTML,
         )
 
     raise error
@@ -334,6 +340,7 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
+dispatcher.add_handler(CommandHandler("error", error))
 dispatcher.add_error_handler(error_handler)
 
 
