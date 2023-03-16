@@ -294,6 +294,32 @@ def prompt(update: Update, context: CallbackContext) -> None:
         pass
 
 
+@typing
+def image(update: Update, context: CallbackContext) -> None:
+    message = update.message
+
+    if not message:
+        return
+
+    prompt = re.sub(r"^/image(@delduca_bot)?$", "", message.text)
+
+    if not prompt:
+        return
+
+    try:
+        with RateLimit(
+            redis_pool=redis_pool,
+            resource=message.chat_id,
+            client=message.from_user.username,
+            max_requests=1,
+            expire=60 * 5,
+        ):
+            response = openai.Image.create(prompt=prompt, size="512x512")
+            message.reply_photo(photo=response["data"][0]["url"])
+    except TooManyRequests:
+        pass
+
+
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
@@ -334,6 +360,7 @@ dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
+dispatcher.add_handler(CommandHandler("image", image))
 dispatcher.add_error_handler(error_handler)
 
 
