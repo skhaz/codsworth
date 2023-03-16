@@ -321,8 +321,8 @@ def image(update: Update, context: CallbackContext) -> None:
             user_id=message.from_user.id,
             name=message.from_user.name,
         )
-
-        message.reply_text(text=f"{mention}, jovem, controle seus hormônios... 🍌")
+        text = f"{mention}, jovem, controle seus hormônios... 🍌"
+        message.reply_text(text=text, parse_mode=ParseMode.HTML)
     except TooManyRequests:
         pass
 
