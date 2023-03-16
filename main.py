@@ -316,6 +316,8 @@ def image(update: Update, context: CallbackContext) -> None:
         ):
             response = openai.Image.create(prompt=prompt, size="512x512")
             message.reply_photo(photo=response["data"][0]["url"])
+    except openai.InvalidRequestError:
+        message.reply_text(text="Jovem, controle seus hormônios... 🍌")
     except TooManyRequests:
         pass
 
