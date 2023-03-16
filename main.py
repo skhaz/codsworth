@@ -317,7 +317,12 @@ def image(update: Update, context: CallbackContext) -> None:
             response = openai.Image.create(prompt=prompt, size="512x512")
             message.reply_photo(photo=response["data"][0]["url"])
     except openai.InvalidRequestError:
-        message.reply_text(text="Jovem, controle seus hormônios... 🍌")
+        mention = mention_html(
+            user_id=message.from_user.id,
+            name=message.from_user.name,
+        )
+
+        message.reply_text(text=f"{mention}, jovem, controle seus hormônios... 🍌")
     except TooManyRequests:
         pass
 
