@@ -278,7 +278,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             resource=message.chat_id,
             client=message.from_user.username,
             max_requests=1,
-            expire=60 * 3,
+            expire=60 * 10,
         ):
             message.reply_text(
                 openai.Completion.create(
@@ -312,7 +312,7 @@ def image(update: Update, context: CallbackContext) -> None:
             resource=message.chat_id,
             client=message.from_user.username,
             max_requests=1,
-            expire=60 * 5,
+            expire=60 * 10,
         ):
             response = openai.Image.create(prompt=prompt, size="512x512")
             message.reply_photo(photo=response["data"][0]["url"])
