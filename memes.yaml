@@ -23,6 +23,10 @@ replies:
     - "That"
   oi:
     - "Oi, quer tc?"
+  caindo:
+    - "Se usasse Kubernetes nada disso teria acontecido..."
+  cair:
+    - "Se usasse Kubernetes..."
 
 slaps:
   - "Minha mão na sua cara"
