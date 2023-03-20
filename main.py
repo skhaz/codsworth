@@ -272,6 +272,8 @@ def prompt(update: Update, context: CallbackContext) -> None:
     if not prompt:
         return
 
+    messages = [{"role": "user", "content": prompt}]
+
     try:
         with RateLimit(
             redis_pool=redis_pool,
@@ -281,14 +283,13 @@ def prompt(update: Update, context: CallbackContext) -> None:
             expire=60 * 10,
         ):
             message.reply_text(
-                openai.Completion.create(
-                    prompt=prompt,
-                    model="text-davinci-003",
-                    best_of=3,
+                openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo-0301",
                     max_tokens=3000,
+                    messages=messages,
                 )
-                .choices[0]
-                .text,
+                .choices[0]["message"]["content"]
+                .strip()
             )
     except TooManyRequests:
         pass
