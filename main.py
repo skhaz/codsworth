@@ -266,11 +266,16 @@ def ban(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    user_id = message.reply_to_message.from_user.id
+    reply_to = message.reply_to_message
+    
+    if not reply_to:
+        return
+
+    user_id = reply_to.from_user.id
     times = redis.incr(f"banned:{user_id}")
     mention = mention_html(user_id=message.from_user.id, name=message.from_user.name)
-    message = f"{mention} já foi banido {times} vez(es) 👮‍♂️"
-    context.bot.send_message(message.chat_id, message, parse_mode=ParseMode.HTML)
+    text = f"{mention} já foi banido {times} vez(es) 👮‍♂️"
+    context.bot.send_message(message.chat_id, text, parse_mode=ParseMode.HTML)
 
 
 @typing
