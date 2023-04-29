@@ -260,6 +260,19 @@ def tramp(update: Update, context: CallbackContext) -> None:
         reply_to_message.reply_video(f)
 
 
+def ban(update: Update, context: CallbackContext) -> None:
+    message = update.message
+
+    if not message:
+        return
+
+    user_id = message.reply_to_message.from_user.id
+    times = redis.incr(f"banned:{user_id}")
+    mention = mention_html(user_id=message.from_user.id, name=message.from_user.name)
+    message = f"{mention} já foi banido {times} vez(es) 👮‍♂️"
+    context.bot.send_message(message.chat_id, message, parse_mode=ParseMode.HTML)
+
+
 @typing
 def prompt(update: Update, context: CallbackContext) -> None:
     message = update.message
@@ -366,6 +379,7 @@ dispatcher.add_handler(CommandHandler("repost", repost))
 dispatcher.add_handler(CommandHandler("rules", rules))
 dispatcher.add_handler(CommandHandler("slap", slap))
 dispatcher.add_handler(CommandHandler("vagabundo", tramp))
+dispatcher.add_handler(CommandHandler("ban", ban))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
 dispatcher.add_handler(CommandHandler("image", image))
 dispatcher.add_error_handler(error_handler)
