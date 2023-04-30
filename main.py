@@ -293,7 +293,7 @@ def reply(update: Update, context: CallbackContext) -> None:
         openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a joker"},
+                {"role": "system", "content": "You are a joker, make a joke"},
                 {"role": "user", "content": reply_to.text},
             ],
         )
