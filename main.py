@@ -278,6 +278,7 @@ def ban(update: Update, context: CallbackContext) -> None:
     context.bot.send_message(message.chat_id, text, parse_mode=ParseMode.HTML)
 
 
+@typing
 def reply(update: Update, context: CallbackContext) -> None:
     message = update.message
 
@@ -294,14 +295,24 @@ def reply(update: Update, context: CallbackContext) -> None:
         {"role": "user", "content": reply_to.text},
     ]
 
-    reply_to.reply_text(
-        openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-        )
-        .choices[0]
-        .message.content
-    )
+    try:
+        with RateLimit(
+            redis_pool=redis_pool,
+            resource=message.chat_id,
+            client=message.from_user.username,
+            max_requests=1,
+            expire=60 * 5,
+        ):
+            reply_to.reply_text(
+                openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=messages,
+                )
+                .choices[0]
+                .message.content
+            )
+    except TooManyRequests:
+        pass
 
 
 @typing
