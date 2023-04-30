@@ -399,6 +399,17 @@ def error_handler(update: object, context: CallbackContext) -> None:
 
 bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
 
+"""
+fortune - tell someone's fortune
+repost - tell them that post already have been posted
+rules - tell the rules
+slap - slaps someone else
+vagabundo - tell the person is lazy
+ban - bans someone else
+reply - reply to a message using ChatGPT
+prompt - generate a text using AI
+image - generate a image using AI
+"""
 dispatcher = Dispatcher(bot=bot, update_queue=Queue())
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, meme))
