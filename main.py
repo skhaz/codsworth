@@ -289,13 +289,15 @@ def reply(update: Update, context: CallbackContext) -> None:
     if not reply_to:
         return
 
+    messages = [
+        {"role": "system", "content": "You are a joker, make a joke about the message"},
+        {"role": "user", "content": reply_to.text},
+    ]
+
     reply_to.reply_text(
         openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a joker, make a joke"},
-                {"role": "user", "content": reply_to.text},
-            ],
+            messages=messages,
         )
         .choices[0]
         .message.content
