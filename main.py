@@ -290,9 +290,14 @@ def reply(update: Update, context: CallbackContext) -> None:
     if not reply_to:
         return
 
+    text = reply_to.text
+
+    if not text:
+        return
+
     messages = [
         {"role": "system", "content": "You are a joker, make a joke about the message"},
-        {"role": "user", "content": reply_to.text},
+        {"role": "user", "content": text},
     ]
 
     try:
