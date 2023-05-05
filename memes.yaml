@@ -27,8 +27,10 @@ replies:
     - "Se usasse Kubernetes nada disso teria acontecido..."
   cair:
     - "Se usasse Kubernetes..."
-  perdão:
+  perdao:
     - "Tá perdoado! 😇"
+  duvido:
+    - "Meu pau de aço no seu ouvido"
 
 slaps:
   - "Minha mão na sua cara"
@@ -64,3 +66,4 @@ likelihoods:
   - POSSIBLE
   - LIKELY
   - VERY_LIKELY
+
