@@ -289,7 +289,7 @@ def leaderboard(update: Update, context: CallbackContext) -> None:
 
     scores = []
     for key in redis.scan_iter(pattern):
-        score = redis.zscore(key, key)
+        score = redis.get(key)
         if score is not None:
             scores.append(score)
 
