@@ -284,17 +284,12 @@ def leaderboard(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    reply_to = message.reply_to_message
-
-    if not reply_to:
-        return
-
     lines = []
     result = redis.zrange("banned", 0, 9, withscores=True, desc=True)
     for item in result:
         lines.append(f"{item[0].decode()} Score: {item[1]}")
 
-    reply_to.reply_text("\n".join(lines))
+    message.reply_text("\n".join(lines))
 
 
 @typing
