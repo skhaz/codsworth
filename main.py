@@ -1,4 +1,5 @@
 import functools
+import heapq
 import mimetypes
 import os
 import re
@@ -284,12 +285,17 @@ def leaderboard(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    lines = []
-    result = redis.zrange("banned", 0, 9, withscores=True, desc=True)
-    for item in result:
-        lines.append(f"{item[0].decode()} Score: {item[1]}")
+    pattern = "banned:*"
 
-    message.reply_text("\n".join(lines))
+    scores = []
+    for key in redis.scan_iter(pattern):
+        score = redis.zscore(key, key)
+        if score is not None:
+            scores.append(score)
+
+    top_scores = heapq.nlargest(10, scores)
+
+    message.reply_text(str(top_scores))
 
 
 @typing
