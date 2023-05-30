@@ -316,7 +316,7 @@ def reply(update: Update, context: CallbackContext) -> None:
         return
 
     messages = [
-        {"role": "system", "content": "You are a joker, make a joke about the message, using the same language."},
+        {"role": "system", "content": "You are a broadcaster, comment about the following message using the same language, and it must be short and objective."},
         {"role": "user", "content": text},
     ]
 
