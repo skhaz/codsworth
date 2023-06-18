@@ -171,7 +171,9 @@ def meme(update: Update, context: CallbackContext) -> None:
             letters.insert((index + 2) + i, "*")
 
         warning = f'{"".join(letters)}\n\nHidden penis detected!!! 🍆'
-        message.reply_text(warning, parse_mode=ParseMode.MARKDOWN_V2)
+
+        print("warning", warning)
+        # message.reply_text(warning, parse_mode=ParseMode.MARKDOWN_V2)
 
         return
 
