@@ -148,13 +148,11 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
+    escaped = escape_markdown(message.text)
+
     text = remove_unicode(message.text.lower())
 
-    if not text:
-        return
-
     penis = "penis"
-    escaped = escape_markdown(text)
     indexes = []
     for char in penis:
         index = escaped.find(char)
