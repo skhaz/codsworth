@@ -154,16 +154,17 @@ def meme(update: Update, context: CallbackContext) -> None:
         return
 
     penis = "penis"
+    escaped_text = escape_markdown(text)
     indexes = []
     for char in penis:
-        index = text.find(char)
+        index = escaped_text.find(char)
         if index != -1:
             indexes.append(index)
 
     found = len(indexes) == len(penis)
 
     if found:
-        letters = [char for char in text]
+        letters = [char for char in escaped_text]
         for i, index in enumerate(indexes):
             letters.insert(index + i, "*")
 
@@ -171,10 +172,12 @@ def meme(update: Update, context: CallbackContext) -> None:
         for i, index in enumerate(indexes):
             letters.insert((index + 2) + i, "*")
 
-        warning = (
-            f'{escape_markdown("".join(letters))}\n\n\nHidden penis detected\\!\\!\\! 🍆'
-        )
-        message.reply_text(warning, parse_mode=ParseMode.MARKDOWN_V2)
+        messages = [
+            "".join(letters),
+            "Hidden penis detected\\!\\!\\! 🍆",
+        ]
+
+        message.reply_text("\n\n\n".join(messages), parse_mode=ParseMode.MARKDOWN_V2)
         return
 
     reply = next((replies[key] for key in text.split() if key in replies), None)
