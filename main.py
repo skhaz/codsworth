@@ -163,13 +163,26 @@ def meme(update: Update, context: CallbackContext) -> None:
 
     found = len(indexes) == len(penis)
 
+    consolidated = []
     if found:
+        i = 0
+        while i < len(indexes):
+            current = indexes[i]
+            next = current + 1
+
+            while next in indexes:
+                current = next
+                next += 1
+
+            consolidated.append(current)
+            i = indexes.index(current) + 1
+
         letters = [char for char in escaped]
-        for i, index in enumerate(indexes):
+        for i, index in enumerate(consolidated):
             letters.insert(index + i, "*")
 
-        indexes = [i for i, char in enumerate(letters) if char == "*"]
-        for i, index in enumerate(indexes):
+        consolidated = [i for i, char in enumerate(letters) if char == "*"]
+        for i, index in enumerate(consolidated):
             letters.insert((index + 2) + i, "*")
 
         messages = [
