@@ -170,8 +170,9 @@ def meme(update: Update, context: CallbackContext) -> None:
         for i, index in enumerate(indexes):
             letters.insert((index + 2) + i, "*")
 
-        warning = f'{"".join(letters)}\n\nHidden penis detected\\!\\!\\! 🍆'
-        message.reply_text(warning, parse_mode=ParseMode.MARKDOWN_V2)
+        #warning = f'{escape("".join(letters))}\n\nHidden penis detected!!! 🍆'
+        #message.reply_text(warning, parse_mode=ParseMode.HTML)
+        message.reply_text("Hidden penis detected!!! 🍆")
         return
 
     reply = next((replies[key] for key in text.split() if key in replies), None)
