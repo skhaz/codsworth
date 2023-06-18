@@ -152,6 +152,29 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
+    penis = "penis"
+    indexes = []
+    for char in penis:
+        index = message.find(char)
+        if index != -1:
+            indexes.append(index)
+
+    found = len(indexes) == len(penis)
+
+    if found:
+        letters = [char for char in message]
+        for i, index in enumerate(indexes):
+            letters.insert(index + i, "*")
+
+        indexes = [i for i, char in enumerate(letters) if char == "*"]
+        for i, index in enumerate(indexes):
+            letters.insert((index + 2) + i, "*")
+
+        message.reply_text(
+            f'{"".join(letters)}\n\nHidden penis detected!!! 🍆',
+            parse_mode=ParseMode.MARKDOWN_V2,
+        )
+
     reply = next((replies[key] for key in text.split() if key in replies), None)
 
     if reply:
@@ -316,7 +339,10 @@ def reply(update: Update, context: CallbackContext) -> None:
         return
 
     messages = [
-        {"role": "system", "content": "You are a broadcaster; comment about the following message using the same language, the comment must be ironic or sarcastic, and it must be short and objective."},
+        {
+            "role": "system",
+            "content": "You are a broadcaster; comment about the following message using the same language, the comment must be ironic or sarcastic, and it must be short and objective.",  # noqa
+        },
         {"role": "user", "content": text},
     ]
 
