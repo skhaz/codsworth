@@ -492,7 +492,7 @@ dispatcher.add_handler(CommandHandler("leaderboard", leaderboard))
 dispatcher.add_handler(CommandHandler("reply", reply))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
 dispatcher.add_handler(CommandHandler("image", image))
-dispatcher.add_error_handler(error_handler)
+# dispatcher.add_error_handler(error_handler)
 
 
 @app.post("/")
