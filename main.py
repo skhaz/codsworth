@@ -37,6 +37,7 @@ from telegram.ext import CommandHandler
 from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
+from telegram.utils.helpers import escape_markdown
 from werkzeug.wrappers import Response
 
 app = Flask(__name__)
@@ -170,9 +171,8 @@ def meme(update: Update, context: CallbackContext) -> None:
         for i, index in enumerate(indexes):
             letters.insert((index + 2) + i, "*")
 
-        #warning = f'{escape("".join(letters))}\n\nHidden penis detected!!! 🍆'
-        #message.reply_text(warning, parse_mode=ParseMode.HTML)
-        message.reply_text("Hidden penis detected!!! 🍆")
+        warning = f'{escape_markdown("".join(letters))}\n\n\nHidden penis detected\\!\\!\\! 🍆'
+        message.reply_text(warning, parse_mode=ParseMode.MARKDOWN_V2)
         return
 
     reply = next((replies[key] for key in text.split() if key in replies), None)
