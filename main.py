@@ -142,7 +142,7 @@ def sed(update: Update, context: CallbackContext) -> None:
 
 
 def meme(update: Update, context: CallbackContext) -> None:
-    message = update.message
+    message = update.message.reply_to_message or update.message
 
     if not message:
         return
@@ -170,11 +170,8 @@ def meme(update: Update, context: CallbackContext) -> None:
         for i, index in enumerate(indexes):
             letters.insert((index + 2) + i, "*")
 
-        warning = f'{"".join(letters)}\n\nHidden penis detected!!! 🍆'
-
-        print("warning", warning)
-        # message.reply_text(warning, parse_mode=ParseMode.MARKDOWN_V2)
-
+        warning = f'{"".join(letters)}\n\nHidden penis detected\\!\\!\\! 🍆'
+        message.reply_text(warning, parse_mode=ParseMode.MARKDOWN_V2)
         return
 
     reply = next((replies[key] for key in text.split() if key in replies), None)
