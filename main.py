@@ -37,7 +37,6 @@ from telegram.ext import CommandHandler
 from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
-from telegram.utils.helpers import escape_markdown
 from werkzeug.wrappers import Response
 
 app = Flask(__name__)
