@@ -176,7 +176,7 @@ def meme(update: Update, context: CallbackContext) -> None:
 
         messages = [
             "".join(letters),
-            escape_markdown("Hidden penis detected!"),
+            "Hidden penis detected!",
         ]
 
         message.reply_text("\n\n".join(messages))
