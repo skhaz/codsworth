@@ -153,18 +153,19 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
+    original = message.text
     penis = 'penis'
     indexes = []
     for char in penis:
         begin = indexes[-1] if indexes else 0
-        index = text[begin:len(text)].find(char)
+        index = original[begin:len(original)].find(char)
         if index != -1:
-            indexes.append(index)
+            indexes.append(index + begin)
 
-    found = len(indexes) == len(penis) and not len(text) == len(penis)
+    found = len(indexes) == len(penis) and not len(original) == len(penis)
 
     if found:
-        letters = [char for char in text]
+        letters = [char for char in original]
         for i, index in enumerate(indexes):
             letters.insert(index + i, '*')
 
