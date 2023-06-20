@@ -159,7 +159,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     indexes = []
     for char in penis:
         begin = indexes[-1] if indexes else 0
-        index = original[begin:end].find(char)
+        index = original[begin:end].lower().find(char)
         if index != -1:
             indexes.append(index + begin)
 
