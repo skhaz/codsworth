@@ -155,11 +155,11 @@ def meme(update: Update, context: CallbackContext) -> None:
     penis = "penis"
     indexes = []
     for char in penis:
-        index = escaped.find(char)
+        index = escaped[indexes[-1]].find(char)
         if index != -1:
             indexes.append(index)
 
-    found = len(indexes) == len(penis)
+    found = len(indexes) == len(penis) and not len(escaped) == len(penis)
 
     if found:
         letters = [char for char in escaped]
