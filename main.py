@@ -146,11 +146,13 @@ def meme(update: Update, context: CallbackContext) -> None:
 
     if not message:
         return
-
-    text = remove_unicode(message.text.lower())
+    
+    text = message.text
 
     if not text:
         return
+
+    text = remove_unicode(text.lower())
 
     original = message.text
     end = len(original)
