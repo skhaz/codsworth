@@ -148,34 +148,36 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    escaped = escape_markdown(message.text)
-
     text = remove_unicode(message.text.lower())
 
-    penis = "penis"
+    if not text:
+        return
+
+    penis = 'penis'
     indexes = []
     for char in penis:
-        index = escaped[indexes[-1]].find(char)
+        begin = indexes[-1] if indexes else 0
+        index = text[begin:len(text)].find(char)
         if index != -1:
             indexes.append(index)
 
-    found = len(indexes) == len(penis) and not len(escaped) == len(penis)
+    found = len(indexes) == len(penis) and not len(text) == len(penis)
 
     if found:
-        letters = [char for char in escaped]
+        letters = [char for char in text]
         for i, index in enumerate(indexes):
-            letters.insert(index + i, "*")
+            letters.insert(index + i, '*')
 
-        indexes = [i for i, char in enumerate(letters) if char == "*"]
+        indexes = [i for i, char in enumerate(letters) if char == '*']
         for i, index in enumerate(indexes):
-            letters.insert((index + 2) + i, "*")
+            letters.insert((index + 2 ) + i, '*')
 
         messages = [
             "".join(letters),
-            escape_markdown("Hidden penis detected 🍆"),
+            escape_markdown("Hidden penis detected!"),
         ]
 
-        message.reply_text("\n\n".join(messages), parse_mode=ParseMode.MARKDOWN_V2)
+        message.reply_text("\n\n".join(messages))
         return
 
     reply = next((replies[key] for key in text.split() if key in replies), None)
