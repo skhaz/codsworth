@@ -174,9 +174,11 @@ def meme(update: Update, context: CallbackContext) -> None:
         for i, index in enumerate(indexes):
             letters.insert((index + 2) + i, "*")
 
+        count = redis.incr(penis)
+
         messages = [
             "".join(letters),
-            "Hidden penis detected!",
+            f"Hidden penis detected! {count} penises have been discovered.",
         ]
 
         message.reply_text("\n\n".join(messages))
