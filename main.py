@@ -142,7 +142,7 @@ def sed(update: Update, context: CallbackContext) -> None:
 
 
 def meme(update: Update, context: CallbackContext) -> None:
-    message = update.message.reply_to_message or update.message
+    message = update.message
 
     if not message:
         return
