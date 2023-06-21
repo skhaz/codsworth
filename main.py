@@ -146,7 +146,7 @@ def meme(update: Update, context: CallbackContext) -> None:
 
     if not message:
         return
-    
+
     text = message.text
 
     if not text:
@@ -164,7 +164,7 @@ def meme(update: Update, context: CallbackContext) -> None:
         if index != -1:
             indexes.append(index + begin)
 
-    in_sequence = all(indexes[i] == indexes[i-1] + 1 for i in range(1, len(indexes)))
+    in_sequence = all(indexes[i] == indexes[i - 1] + 1 for i in range(1, len(indexes)))
 
     found = len(indexes) == len(penis) and not in_sequence
 
