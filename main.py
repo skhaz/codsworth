@@ -177,7 +177,7 @@ def meme(update: Update, context: CallbackContext) -> None:
 
         messages = [
             "".join(letters),
-            f"Hidden penis detected! {count} penises have been discovered so far.",
+            f"🚨 Hidden penis detected! {count} penises have been discovered so far.",
         ]
 
         message.reply_text("\n\n".join(messages))
