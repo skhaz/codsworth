@@ -163,8 +163,8 @@ def meme(update: Update, context: CallbackContext) -> None:
             indexes.append(index + begin)
 
     in_sequence = all(indexes[i] == indexes[i - 1] + 1 for i in range(1, len(indexes)))
-    equidistant = len(indexes) == len(penis)
-    if equidistant and not in_sequence:
+    is_equidistant = len(indexes) == len(penis)
+    if is_equidistant and not in_sequence:
         letters = [char for char in text]
         for i, index in enumerate(indexes):
             letters.insert(index + i, "*")
