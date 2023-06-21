@@ -60,7 +60,9 @@ replies = memes["replies"]
 slaps = memes["slaps"]
 welcome = memes["welcome"]
 helps = memes["helps"]
+penis = memes["penis"]
 porn = memes["porn"]
+
 likelihoods = tuple(memes["likelihoods"])
 
 
@@ -153,7 +155,6 @@ def meme(update: Update, context: CallbackContext) -> None:
         return
 
     length = len(text)
-    penis = "penis"
     indexes = []
     for char in penis:
         begin = indexes[-1] if indexes else 0
