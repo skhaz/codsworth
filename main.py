@@ -152,8 +152,6 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
-    text = remove_unicode(text.lower())
-
     original = message.text
     end = len(original)
     penis = "penis"
@@ -184,6 +182,8 @@ def meme(update: Update, context: CallbackContext) -> None:
 
         message.reply_text("\n\n".join(messages))
         return
+
+    text = remove_unicode(text.lower())
 
     reply = next((replies[key] for key in text.split() if key in replies), None)
 
