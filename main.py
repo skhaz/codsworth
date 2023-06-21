@@ -152,13 +152,12 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
-    original = message.text
-    end = len(original)
+    length = len(text)
     penis = "penis"
     indexes = []
     for char in penis:
         begin = indexes[-1] if indexes else 0
-        index = original[begin:end].lower().find(char)
+        index = text[begin:length].lower().find(char)
         if index != -1:
             indexes.append(index + begin)
 
@@ -167,7 +166,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     found = len(indexes) == len(penis) and not is_sequence
 
     if found:
-        letters = [char for char in original]
+        letters = [char for char in text]
         for i, index in enumerate(indexes):
             letters.insert(index + i, "*")
 
