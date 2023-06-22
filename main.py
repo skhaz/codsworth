@@ -173,14 +173,17 @@ def meme(update: Update, context: CallbackContext) -> None:
         for i, index in enumerate(indexes):
             letters.insert((index + 2) + i, "*")
 
+        user_id = message.from_user.id
+        author = message.from_user.name
         count = redis.incr(penis)
+        count_by_author = redis.incr(f"{penis}:count:{user_id}")
 
         messages = [
             "".join(letters),
-            f"🚨 Hidden penis detected! {count} penises have been discovered so far.",
+            f"Hidden penis detected! {count} penises have been discovered so far.\n{author} has already loved the {penis} {count_by_author} time(s).",
         ]
 
-        message.reply_text("\n\n".join(messages))
+        message.reply_text("\n\n".join(messages), parse_mode=ParseMode.HTML)
         return
 
     text = remove_unicode(text.lower())
