@@ -167,11 +167,11 @@ def meme(update: Update, context: CallbackContext) -> None:
     if is_equidistant and not in_sequence:
         letters = [char for char in text]
         for i, index in enumerate(indexes):
-            letters.insert(index + i, "*")
+            letters.insert(index + i, "**")
 
         indexes = [i for i, char in enumerate(letters) if char == "*"]
         for i, index in enumerate(indexes):
-            letters.insert((index + 2) + i, "*")
+            letters.insert((index + 3) + i, "**")
 
         user_id = message.from_user.id
         author = message.from_user.name
