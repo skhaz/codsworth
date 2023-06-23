@@ -155,7 +155,7 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
-    escaped_text = escape_markdown(text, version=2)
+    escaped_text = escape_markdown(text, version=1)
     length = len(escaped_text)
     indexes = []
     for char in penis:
