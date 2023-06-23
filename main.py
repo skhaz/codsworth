@@ -178,10 +178,14 @@ def meme(update: Update, context: CallbackContext) -> None:
         count = redis.incr(penis)
         count_by_author = redis.incr(f"{penis}:count:{user_id}")
 
-        messages = [
-            "".join(letters),
+        caption = [
             f"Hidden penis detected! {count} penises have been discovered so far. "
             f"{author} has already worshiped the {penis} {count_by_author} time(s).",
+        ]
+
+        messages = [
+            "".join(letters),
+            "".join(caption),
         ]
 
         message.reply_text("\n\n".join(messages), parse_mode=ParseMode.HTML)
