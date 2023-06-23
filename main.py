@@ -37,6 +37,7 @@ from telegram.ext import CommandHandler
 from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
+from telegram.utils.helpers import escape_markdown
 from werkzeug.wrappers import Response
 
 app = Flask(__name__)
@@ -154,18 +155,19 @@ def meme(update: Update, context: CallbackContext) -> None:
     if not text:
         return
 
-    length = len(text)
+    escaped_text = escape_markdown(text)
+    length = len(escaped_text)
     indexes = []
     for char in penis:
         begin = indexes[-1] if indexes else 0
-        index = text[begin:length].lower().find(char)
+        index = escaped_text[begin:length].lower().find(char)
         if index != -1:
             indexes.append(index + begin)
 
     in_sequence = any(indexes[i] + 1 == indexes[i + 1] for i in range(len(indexes) - 1))
     is_equidistant = len(indexes) == len(penis)
     if is_equidistant and not in_sequence:
-        letters = [char for char in text]
+        letters = [char for char in escaped_text]
         for i, index in enumerate(indexes):
             letters.insert(index + i, "*")
 
@@ -188,7 +190,7 @@ def meme(update: Update, context: CallbackContext) -> None:
             "".join(caption),
         ]
 
-        message.reply_text("\n\n".join(messages), parse_mode=ParseMode.HTML)
+        message.reply_text("\n\n".join(messages), parse_mode=ParseMode.MARKDOWN_V2)
         return
 
     text = remove_unicode(text.lower())
