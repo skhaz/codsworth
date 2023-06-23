@@ -162,7 +162,7 @@ def meme(update: Update, context: CallbackContext) -> None:
         if index != -1:
             indexes.append(index + begin)
 
-    in_sequence = all(indexes[i] == indexes[i - 1] + 1 for i in range(1, len(indexes)))
+    in_sequence = any(indexes[i] + 1 == indexes[i + 1] for i in range(len(indexes) - 1))
     is_equidistant = len(indexes) == len(penis)
     if is_equidistant and not in_sequence:
         letters = [char for char in text]
@@ -180,7 +180,7 @@ def meme(update: Update, context: CallbackContext) -> None:
 
         messages = [
             "".join(letters),
-            f"Hidden penis detected! {count} penises have been discovered so far.\n{author} has already loved the {penis} {count_by_author} time(s).",
+            f"Hidden penis detected! {count} penises have been discovered so far.\n{author} has already worshiped the {penis} {count_by_author} time(s).",
         ]
 
         message.reply_text("\n\n".join(messages), parse_mode=ParseMode.HTML)
