@@ -180,7 +180,8 @@ def meme(update: Update, context: CallbackContext) -> None:
 
         messages = [
             "".join(letters),
-            f"Hidden penis detected! {count} penises have been discovered so far.\n{author} has already worshiped the {penis} {count_by_author} time(s).",
+            f"Hidden penis detected! {count} penises have been discovered so far. "
+            f"{author} has already worshiped the {penis} {count_by_author} time(s).",
         ]
 
         message.reply_text("\n\n".join(messages), parse_mode=ParseMode.HTML)
