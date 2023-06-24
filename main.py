@@ -176,13 +176,14 @@ def meme(update: Update, context: CallbackContext) -> None:
             letters.insert((index + 2) + i, "*")
 
         user_id = message.from_user.id
-        author = message.from_user.name
+        user = message.from_user.name
         count = redis.incr(penis)
         count_by_author = redis.incr(f"{penis}:count:{user_id}")
+        redis.set(f"{penis}:user:{user_id}", user)
 
         caption = [
             f"Hidden penis detected! {count} penises have been discovered so far. "
-            f"{author} has already worshiped the {penis} {count_by_author} time(s).",
+            f"{user} has already worshiped the {penis} {count_by_author} time(s).",
         ]
 
         messages = [
