@@ -1,5 +1,4 @@
 import functools
-import heapq
 import mimetypes
 import os
 import re
@@ -324,8 +323,9 @@ def ban(update: Update, context: CallbackContext) -> None:
     pipeline = redis.pipeline(transaction=False)
     pipeline.incr(f"ban:count:{user_id}")
     pipeline.set(f"ban:user:{user_id}", user)
+    times = pipeline.execute()[0]
     mention = mention_html(user_id=user_id, name=user)
-    text = f"{mention} já foi banido {pipeline.execute()[0]} vez(es) 👮‍♂️"
+    text = f"{mention} já foi banido {times} vez(es) 👮‍♂️"
     context.bot.send_message(message.chat_id, text, parse_mode=ParseMode.HTML)
 
 
@@ -335,17 +335,29 @@ def leaderboard(update: Update, context: CallbackContext) -> None:
     if not message:
         return
 
-    pattern = "banned:*"
+    get_count = (
+        lambda key: int(value.decode()) if (value := redis.get(key)) is not None else 0
+    )
 
-    scores = []
-    for key in redis.scan_iter(pattern):
-        score = redis.get(key)
-        if score is not None:
-            scores.append(score)
+    pederasts = {
+        key.decode().split(":")[2]: get_count(key)
+        for key in redis.scan_iter(f"{penis}:count:*")
+    }
 
-    top_scores = heapq.nlargest(10, scores)
+    sorted_pederasts = sorted(pederasts.items(), key=lambda x: x[1], reverse=True)[:10]
 
-    message.reply_text(str(top_scores))
+    get_username = (
+        lambda key: username.decode()
+        if (username := redis.get(key)) is not None
+        else None
+    )
+
+    arr = [
+        f"- [{get_username(f'{penis}:user:{pederast[0]}')}](tg://user?id={pederast[0]}) worshipped the {penis} {pederast[1]} times."
+        for pederast in sorted_pederasts  # noqa
+    ]
+
+    message.reply_text("\n".join(arr), parse_mode=ParseMode.MARKDOWN_V2)
 
 
 @typing
@@ -460,11 +472,6 @@ def image(update: Update, context: CallbackContext) -> None:
         pass
 
 
-@typing
-def rank(update: Update, context: CallbackContext) -> None:
-    pass
-
-
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
@@ -522,7 +529,6 @@ dispatcher.add_handler(CommandHandler("leaderboard", leaderboard))
 dispatcher.add_handler(CommandHandler("reply", reply))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
 dispatcher.add_handler(CommandHandler("image", image))
-dispatcher.add_handler(CommandHandler("rank", rank))
 # dispatcher.add_error_handler(error_handler)
 
 
