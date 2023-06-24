@@ -182,7 +182,7 @@ def meme(update: Update, context: CallbackContext) -> None:
         pipeline.incr(penis)
         pipeline.incr(f"{penis}:count:{user_id}")
         pipeline.set(f"{penis}:user:{user_id}", user)
-        [count, count_by_author] = pipeline.execute()
+        count, count_by_author, _ = pipeline.execute()
 
         caption = [
             f"Hidden penis detected! {count} penises have been discovered so far. "
@@ -324,9 +324,8 @@ def ban(update: Update, context: CallbackContext) -> None:
     pipeline = redis.pipeline(transaction=False)
     pipeline.incr(f"ban:count:{user_id}")
     pipeline.set(f"ban:user:{user_id}", user)
-    times = pipeline.execute()[0]
     mention = mention_html(user_id=user_id, name=user)
-    text = f"{mention} já foi banido {times} vez(es) 👮‍♂️"
+    text = f"{mention} já foi banido {pipeline.execute()[0]} vez(es) 👮‍♂️"
     context.bot.send_message(message.chat_id, text, parse_mode=ParseMode.HTML)
 
 
