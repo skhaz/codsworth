@@ -177,9 +177,12 @@ def meme(update: Update, context: CallbackContext) -> None:
 
         user_id = message.from_user.id
         user = message.from_user.name
-        count = redis.incr(penis)
-        count_by_author = redis.incr(f"{penis}:count:{user_id}")
-        redis.set(f"{penis}:user:{user_id}", user)
+
+        pipeline = redis.pipeline(transaction=False)
+        pipeline.incr(penis)
+        pipeline.incr(f"{penis}:count:{user_id}")
+        pipeline.set(f"{penis}:user:{user_id}", user)
+        [count, count_by_author] = pipeline.execute()
 
         caption = [
             f"Hidden penis detected! {count} penises have been discovered so far. "
@@ -317,8 +320,12 @@ def ban(update: Update, context: CallbackContext) -> None:
         return
 
     user_id = reply_to.from_user.id
-    times = redis.incr(f"ban:{user_id}")
-    mention = mention_html(user_id=user_id, name=reply_to.from_user.name)
+    user = reply_to.from_user.name
+    pipeline = redis.pipeline(transaction=False)
+    pipeline.incr(f"ban:count:{user_id}")
+    pipeline.set(f"ban:user:{user_id}", user)
+    times = pipeline.execute()[0]
+    mention = mention_html(user_id=user_id, name=user)
     text = f"{mention} já foi banido {times} vez(es) 👮‍♂️"
     context.bot.send_message(message.chat_id, text, parse_mode=ParseMode.HTML)
 
@@ -495,6 +502,7 @@ leaderboard - tbd
 reply - reply to a message using ChatGPT
 prompt - generate a text using AI
 image - generate a image using AI
+rank - To Do
 """
 dispatcher = Dispatcher(bot=bot, update_queue=Queue())
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
@@ -510,6 +518,7 @@ dispatcher.add_handler(CommandHandler("leaderboard", leaderboard))
 dispatcher.add_handler(CommandHandler("reply", reply))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
 dispatcher.add_handler(CommandHandler("image", image))
+dispatcher.add_handler(CommandHandler("rank", rank))
 # dispatcher.add_error_handler(error_handler)
 
 
