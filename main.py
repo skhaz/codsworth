@@ -461,6 +461,11 @@ def image(update: Update, context: CallbackContext) -> None:
         pass
 
 
+@typing
+def rank(update: Update, context: CallbackContext) -> None:
+    pass
+
+
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
