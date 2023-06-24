@@ -509,11 +509,10 @@ rules - tell the rules
 slap - slaps someone else
 vagabundo - tell the person is lazy
 ban - bans someone else
-leaderboard - tbd
+leaderboard - featured users
 reply - reply to a message using ChatGPT
 prompt - generate a text using AI
 image - generate a image using AI
-rank - To Do
 """
 dispatcher = Dispatcher(bot=bot, update_queue=Queue())
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
