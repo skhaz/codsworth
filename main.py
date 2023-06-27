@@ -165,7 +165,8 @@ def meme(update: Update, context: CallbackContext) -> None:
 
     in_sequence = any(indexes[i] + 1 == indexes[i + 1] for i in range(len(indexes) - 1))
     is_equidistant = len(indexes) == len(penis)
-    if is_equidistant and not in_sequence:
+    should_send = random() <= 0.2
+    if is_equidistant and not in_sequence and should_send:
         letters = [char for char in escaped_text]
         for i, index in enumerate(indexes):
             letters.insert(index + i, "*")
