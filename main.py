@@ -354,7 +354,7 @@ def leaderboard(update: Update, context: CallbackContext) -> None:
     )
 
     arr = [
-        rf"\* [{get_username(f'{penis}:user:{pederast[0]}')}](tg://user?id={pederast[0]}) worshipped the {penis} {pederast[1]} times"
+        rf"\* {get_username(f'{penis}:user:{pederast[0]}')} worshipped the {penis} {pederast[1]} times"
         for pederast in sorted_pederasts  # noqa
     ]
 
