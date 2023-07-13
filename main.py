@@ -36,7 +36,6 @@ from telegram.ext import CommandHandler
 from telegram.ext import Dispatcher
 from telegram.ext import Filters
 from telegram.ext import MessageHandler
-from telegram.utils.helpers import escape_markdown
 from werkzeug.wrappers import Response
 
 app = Flask(__name__)
@@ -152,49 +151,6 @@ def meme(update: Update, context: CallbackContext) -> None:
     text = message.text
 
     if not text:
-        return
-
-    escaped_text = escape_markdown(text, version=2)
-    length = len(escaped_text)
-    indexes = []
-    for char in penis:
-        begin = indexes[-1] if indexes else 0
-        index = escaped_text[begin:length].lower().find(char)
-        if index != -1:
-            indexes.append(index + begin)
-
-    in_sequence = any(indexes[i] + 1 == indexes[i + 1] for i in range(len(indexes) - 1))
-    is_equidistant = len(indexes) == len(penis)
-    should_send = random() <= 0.2
-    if is_equidistant and not in_sequence and should_send:
-        letters = [char for char in escaped_text]
-        for i, index in enumerate(indexes):
-            letters.insert(index + i, "*")
-
-        indexes = [i for i, char in enumerate(letters) if char == "*"]
-        for i, index in enumerate(indexes):
-            letters.insert((index + 2) + i, "*")
-
-        user_id = message.from_user.id
-        user = message.from_user.name
-
-        pipeline = redis.pipeline(transaction=False)
-        pipeline.incr(penis)
-        pipeline.incr(f"{penis}:count:{user_id}")
-        pipeline.set(f"{penis}:user:{user_id}", user)
-        count, count_by_author, _ = pipeline.execute()
-
-        caption = [
-            f"Hidden penis detected! {count} penises have been discovered so far. "
-            f"{user} has already worshiped the {penis} {count_by_author} time(s).",
-        ]
-
-        messages = [
-            "".join(letters),
-            escape_markdown("".join(caption), version=2),
-        ]
-
-        message.reply_text("\n\n".join(messages), parse_mode=ParseMode.MARKDOWN_V2)
         return
 
     text = remove_unicode(text.lower())
@@ -328,37 +284,6 @@ def ban(update: Update, context: CallbackContext) -> None:
     mention = mention_html(user_id=user_id, name=user)
     text = f"{mention} já foi banido {times} vez(es) 👮‍♂️"
     context.bot.send_message(message.chat_id, text, parse_mode=ParseMode.HTML)
-
-
-def leaderboard(update: Update, context: CallbackContext) -> None:
-    message = update.message
-
-    if not message:
-        return
-
-    get_count = (
-        lambda key: int(value.decode()) if (value := redis.get(key)) is not None else 0
-    )
-
-    pederasts = {
-        key.decode().split(":")[2]: get_count(key)
-        for key in redis.scan_iter(f"{penis}:count:*")
-    }
-
-    sorted_pederasts = sorted(pederasts.items(), key=lambda x: x[1], reverse=True)[:10]
-
-    get_username = (
-        lambda key: username.decode()
-        if (username := redis.get(key)) is not None
-        else None
-    )
-
-    arr = [
-        rf"\* [{get_username(f'{penis}:user:{pederast[0]}')}](tg://user?id={pederast[0]}) worshipped the {penis} {pederast[1]} times"
-        for pederast in sorted_pederasts  # noqa
-    ]
-
-    message.reply_text("\n".join(arr), parse_mode=ParseMode.MARKDOWN_V2)
 
 
 @typing
