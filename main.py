@@ -354,7 +354,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             message.reply_text(
                 openai.Completion.create(
                     prompt=prompt,
-                    model="text-davinci-003",
+                    model="gpt-3.5-turbo-instruct",
                     max_tokens=3000,
                     best_of=3,
                 )
