@@ -13,13 +13,12 @@ FROM base
 
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
-RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2 && playwright install
+RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
 COPY . .
 
-ARG PORT=8000
-ENV PORT $PORT
-EXPOSE $PORT
+WORKDIR /root/.cache/ms-playwright
+RUN playwright install chromium
 
+WORKDIR /app
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
-
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
