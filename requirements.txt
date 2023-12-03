@@ -2,8 +2,11 @@ flask==2.3.1
 fuzzywuzzy==0.18.0
 google-cloud-vision==3.4.1
 gunicorn==20.1.0
+jinja2==3.1.2
 levenshtein==0.21.0
 openai==0.27.5
+pillow==10.1.0
+playwright==1.40.0
 python-redis-rate-limit==0.0.8
 python-telegram-bot==13.15
 pyyaml==6.0

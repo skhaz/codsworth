@@ -9,6 +9,7 @@ FROM base AS builder
 RUN python -m venv /opt/venv
 COPY requirements.txt .
 RUN pip install --no-cache-dir --requirement requirements.txt
+RUN playwright install chromium
 
 FROM base
 

@@ -11,6 +11,7 @@ from pathlib import Path
 from queue import Queue
 from random import choice
 from random import random
+from tempfile import TemporaryDirectory
 from typing import Union
 
 import openai
@@ -22,6 +23,7 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
+from playwright.sync_api import sync_playwright
 from redis import ConnectionPool
 from redis import Redis
 from redis_rate_limit import RateLimit
@@ -398,6 +400,86 @@ def image(update: Update, context: CallbackContext) -> None:
         pass
 
 
+def trim(image_path, margin=32, trim_color="#92b88a"):
+    with Image.open(image_path) as img:
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+
+        width, height = img.size
+
+        left, top, right, bottom = 0, 0, width - 1, height - 1
+
+        trim_color_rgb = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
+
+        while left < width:
+            column = [img.getpixel((left, y)) for y in range(height)]
+            if all(pix == trim_color_rgb for pix in column):
+                left += 1
+            else:
+                break
+
+        while top < height:
+            row = [img.getpixel((x, top)) for x in range(width)]
+            if all(pix == trim_color_rgb for pix in row):
+                top += 1
+            else:
+                break
+
+        while right > left:
+            column = [img.getpixel((right, y)) for y in range(height)]
+            if all(pix == trim_color_rgb for pix in column):
+                right -= 1
+            else:
+                break
+
+        while bottom > top:
+            row = [img.getpixel((x, bottom)) for x in range(width)]
+            if all(pix == trim_color_rgb for pix in row):
+                bottom -= 1
+            else:
+                break
+
+        left = max(left - margin, 0)
+        top = max(top - margin, 0)
+        right = min(right + margin, width - 1)
+        bottom = min(bottom + margin, height - 1)
+
+        img = img.crop((left, top, right, bottom))
+        img.save(image_path)
+
+
+@typing
+def ditto(update: Update, context: CallbackContext) -> None:
+    message = update.message
+
+    if not message:
+        return
+
+    with (
+        sync_playwright() as playwright,
+        TemporaryDirectory() as tmpdir,
+    ):
+        chromium = playwright.chromium
+        browser = chromium.launch()
+        context = browser.new_context(
+            viewport={
+                "width": 1600,
+                "height": 0,
+            },
+            device_scale_factor=2,
+        )
+
+        page = context.new_page()
+
+        page.goto(f"file://{os.path.abspath('assets/ditto/index.html')}")
+        screenshot_path = "screenshot.png"
+        page.screenshot(path=screenshot_path, full_page=True)
+
+        trim(screenshot_path)
+
+        message.reply_photo(photo=open(screenshot_path, "rb"))
+
+
 def error_handler(update: object, context: CallbackContext) -> None:
     if not isinstance(update, Update):
         return
@@ -439,6 +521,7 @@ leaderboard - featured users
 reply - reply to a message using ChatGPT
 prompt - generate a text using AI
 image - generate a image using AI
+ditto - copy someone else's message
 """
 dispatcher = Dispatcher(bot=bot, update_queue=Queue())
 dispatcher.add_handler(MessageHandler(Filters.regex(r"^s/"), sed))
@@ -453,6 +536,7 @@ dispatcher.add_handler(CommandHandler("ban", ban))
 dispatcher.add_handler(CommandHandler("reply", reply))
 dispatcher.add_handler(CommandHandler("prompt", prompt))
 dispatcher.add_handler(CommandHandler("image", image))
+dispatcher.add_handler(CommandHandler("ditto", ditto))
 # dispatcher.add_error_handler(error_handler)
 
 
