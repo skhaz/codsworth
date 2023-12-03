@@ -1,4 +1,4 @@
-FROM python:3.10 AS base
+FROM python:3.10-slim AS base
 
 ENV PATH /opt/venv/bin:$PATH
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
@@ -18,9 +18,8 @@ COPY . .
 
 WORKDIR /opt
 ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
-
-RUN playwright install webkit
-RUN ls -la /opt/playwright
+RUN playwright install chromium
+RUN playwright install install-deps
 
 WORKDIR /app
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2

@@ -459,8 +459,8 @@ def ditto(update: Update, context: CallbackContext) -> None:
         sync_playwright() as playwright,
         TemporaryDirectory() as tmpdir,
     ):
-        chromium = playwright.webkit
-        browser = chromium.launch(headless=True)
+        chromium = playwright.chromium
+        browser = chromium.launch()
         context = browser.new_context(
             viewport={
                 "width": 1600,
