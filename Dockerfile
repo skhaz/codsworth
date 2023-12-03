@@ -16,8 +16,10 @@ COPY --from=builder /opt/venv /opt/venv
 RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
 COPY . .
 
-WORKDIR /root/.cache/ms-playwright
-RUN playwright install
+WORKDIR /opt
+ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
+RUN playwright install webkit
+RUN ls -la /opt/playwright
 
 WORKDIR /app
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
