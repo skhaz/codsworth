@@ -11,16 +11,16 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --requirement requirements.txt
 
 FROM base
-WORKDIR /app
-COPY --from=builder /opt/venv /opt/venv
-RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
-COPY . .
 
 WORKDIR /opt
 ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
+COPY --from=builder /opt/venv /opt/venv
 RUN playwright install chromium
 RUN playwright install-deps chromium
 
-WORKDIR /app
-ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+WORKDIR /opt/app
+RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
+# ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+COPY . .
+
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
