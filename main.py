@@ -437,10 +437,10 @@ def image(update: Update, context: CallbackContext) -> None:
 def trim(buffer, margin=32, trim_color="#92b88a"):
     with PIL.Image.open(io.BytesIO(buffer)).convert("RGB") as image:
         data = np.array(image)
-        trim_color_rgb = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
+        trim = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
 
-        non_trim_rows = np.where(np.any(data != trim_color_rgb, axis=(1, 2)))[0]
-        non_trim_cols = np.where(np.any(data != trim_color_rgb, axis=(0, 2)))[0]
+        non_trim_rows = np.where(np.any(data != trim, axis=(1, 2)))[0]
+        non_trim_cols = np.where(np.any(data != trim, axis=(0, 2)))[0]
 
         left = max(0, non_trim_cols[0] - margin)
         top = max(0, non_trim_rows[0] - margin)
