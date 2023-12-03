@@ -391,6 +391,7 @@ def image(update: Update, context: CallbackContext) -> None:
 
 def trim(buffer, margin=32, trim_color="#92b88a"):
     with PIL.Image.open(io.BytesIO(buffer)).convert("RGB") as image:
+        return image
         width, height = image.size
 
         left, top, right, bottom = 0, 0, width - 1, height - 1
@@ -594,12 +595,6 @@ def index() -> Response:
         page.set_content(template.render(context))
 
         data = trim(page.screenshot())
-        # screenshot_path = "screenshot.png"
-        # page.screenshot(path=screenshot_path, full_page=True)
-
-        # trim(screenshot_path)
-
-        # Pillow image data to bytes
 
         buffer = io.BytesIO()
         data.save(buffer, format="PNG")
