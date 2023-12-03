@@ -1,4 +1,4 @@
-FROM python:3.10-slim AS base
+FROM python:3.10 AS base
 
 ENV PATH /opt/venv/bin:$PATH
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
@@ -18,6 +18,7 @@ COPY . .
 
 WORKDIR /opt
 ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
+
 RUN playwright install webkit
 RUN ls -la /opt/playwright
 
