@@ -19,7 +19,7 @@ COPY . .
 WORKDIR /opt
 ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
 RUN playwright install chromium
-RUN playwright install install-deps chromium
+RUN playwright install-deps chromium
 
 WORKDIR /app
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
