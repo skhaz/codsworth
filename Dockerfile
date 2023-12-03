@@ -9,15 +9,15 @@ FROM base AS builder
 RUN python -m venv /opt/venv
 COPY requirements.txt .
 RUN pip install --no-cache-dir --requirement requirements.txt
-FROM base
 
+FROM base
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
 COPY . .
 
 WORKDIR /root/.cache/ms-playwright
-RUN playwright install chromium
+RUN playwright install
 
 WORKDIR /app
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
