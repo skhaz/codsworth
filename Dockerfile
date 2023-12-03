@@ -8,15 +8,12 @@ ENV PYTHONDONTWRITEBYTECODE 1
 FROM base AS builder
 RUN python -m venv /opt/venv
 COPY requirements.txt .
-RUN pip install --no-cache-dir --requirement requirements.txt && \
-  playwright install && \
-  playwright install chromium
-
+RUN pip install --no-cache-dir --requirement requirements.txt
 FROM base
 
 WORKDIR /app
-RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
 COPY --from=builder /opt/venv /opt/venv
+RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2 && playwright install chromium
 COPY . .
 
 RUN useradd -r user
