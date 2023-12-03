@@ -8,8 +8,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 FROM base AS builder
 RUN python -m venv /opt/venv
 COPY requirements.txt .
-RUN pip install --no-cache-dir --requirement requirements.txt
-RUN playwright install chromium
+RUN pip install --no-cache-dir --requirement requirements.txt && \
+  playwright install && \
+  playwright install chromium
 
 FROM base
 
