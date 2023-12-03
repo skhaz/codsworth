@@ -128,22 +128,22 @@
       gap: 10px;
     }
 
-    .frwd {
+    .forward {
       display: flex;
       align-items: end;
       gap: 5px;
     }
 
-    .shr_ico {
+    .share_icon {
       display: inline-block;
     }
 
-    .shr_ico img {
+    .share_icon img {
       width: calc(var(--msg-size) * 1.8);
       padding-bottom: 2px;
     }
 
-    .inf_wrp {
+    .information_wrapper {
       display: flex;
       align-items: end;
       color: #999999;
@@ -157,18 +157,18 @@
 <body>
   <div class="chat">
 
-    <!-- start -->
+    {% for message in messages %}
     <div class="message_wrapper">
       <div class="profile_image">
-        <img src="assets/profileimg.png" alt="">
+        <img src="{{ message.avatar }}" alt="">
       </div>
       <div class="text_padding">
         <div class="text_wrapper">
           <div class="sender">
-            <div class="username">Wander</div>
-            <div class="role">admin</div>
+            <div class="username">{{ message.name }}</div>
+            <div class="role">{{ message.role }}</div>
           </div>
-          <div class="message">Ontem, oficialmente, sai bolsa</div>
+          <div class="message">{{ message.content }}</div>
           <div class="message_footer">
             <div class="react_pa">
               <div class="react_wrapper">
@@ -176,10 +176,10 @@
                 <div class="react_user">s</div>
               </div>
             </div>
-            <div class="ms_info">
-              <div class="inf_wrp">
-                <div class="frwd">
-                  <span class="shr_ico">
+            <div class="message_information">
+              <div class="information_wrapper">
+                <div class="forward">
+                  <span class="share_icon">
                     <img src="assets/share.png" alt="">
                   </span>
                   4
@@ -191,43 +191,7 @@
         </div>
       </div>
     </div>
-    <!--  end -->
-
-    <!-- start -->
-    <div class="message_wrapper">
-      <div class="profile_image">
-        <img src="assets/profileimg.png" alt="">
-      </div>
-      <div class="text_padding">
-        <div class="text_wrapper">
-          <div class="sender">
-            <div class="username">Wander</div>
-            <div class="role">admin</div>
-          </div>
-          <div class="message">Ontem, oficialmente, sai bolsa</div>
-          <div class="message_footer">
-            <div class="react_pa">
-              <div class="react_wrapper">
-                <div class="react_emoji">😱</div>
-                <div class="react_user">s</div>
-              </div>
-            </div>
-            <div class="ms_info">
-              <div class="inf_wrp">
-                <div class="frwd">
-                  <span class="shr_ico">
-                    <img src="assets/share.png" alt="">
-                  </span>
-                  4
-                </div>
-                <div class="sn_ti">16:16</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--  end -->
+    {% endfor %}
 
   </div>
 </body>

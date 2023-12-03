@@ -7,40 +7,28 @@ import subprocess
 import unicodedata
 from functools import wraps
 from html import escape
-from http import HTTPStatus
 from pathlib import Path
-from queue import Queue
 from random import choice
 from random import random
 from tempfile import TemporaryDirectory
 from typing import Union
 
+import jinja2
 import openai
 import PIL.Image
-import sentry_sdk
 import yaml
 from flask import Flask
-from flask import make_response
-from flask import request
 from flask import send_file
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
-from google.cloud.vision import ImageAnnotatorClient
 from playwright.sync_api import sync_playwright
-from redis import ConnectionPool
-from redis import Redis
 from redis_rate_limit import RateLimit
 from redis_rate_limit import TooManyRequests
-from telegram import Bot
 from telegram import ChatAction
 from telegram import ParseMode
 from telegram import Update
 from telegram.error import TelegramError
 from telegram.ext import CallbackContext
-from telegram.ext import CommandHandler
-from telegram.ext import Dispatcher
-from telegram.ext import Filters
-from telegram.ext import MessageHandler
 from werkzeug.wrappers import Response
 
 app = Flask(__name__)
@@ -404,53 +392,47 @@ def image(update: Update, context: CallbackContext) -> None:
 
 
 def trim(buffer, margin=32, trim_color="#92b88a"):
-    # with Image.open(image_path) as img:
-    #     if img.mode != "RGB":
-    #         img = img.convert("RGB")
+    with PIL.Image.open(io.BytesIO(buffer)).convert("RGB") as image:
+        width, height = image.size
 
-    image = PIL.Image.open(io.BytesIO(buffer)).convert("RGB")
+        left, top, right, bottom = 0, 0, width - 1, height - 1
 
-    width, height = image.size
+        trim_color_rgb = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
 
-    left, top, right, bottom = 0, 0, width - 1, height - 1
+        while left < width:
+            column = [image.getpixel((left, y)) for y in range(height)]
+            if all(pix == trim_color_rgb for pix in column):
+                left += 1
+            else:
+                break
 
-    trim_color_rgb = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
+        while top < height:
+            row = [image.getpixel((x, top)) for x in range(width)]
+            if all(pix == trim_color_rgb for pix in row):
+                top += 1
+            else:
+                break
 
-    while left < width:
-        column = [image.getpixel((left, y)) for y in range(height)]
-        if all(pix == trim_color_rgb for pix in column):
-            left += 1
-        else:
-            break
+        while right > left:
+            column = [image.getpixel((right, y)) for y in range(height)]
+            if all(pix == trim_color_rgb for pix in column):
+                right -= 1
+            else:
+                break
 
-    while top < height:
-        row = [image.getpixel((x, top)) for x in range(width)]
-        if all(pix == trim_color_rgb for pix in row):
-            top += 1
-        else:
-            break
+        while bottom > top:
+            row = [image.getpixel((x, bottom)) for x in range(width)]
+            if all(pix == trim_color_rgb for pix in row):
+                bottom -= 1
+            else:
+                break
 
-    while right > left:
-        column = [image.getpixel((right, y)) for y in range(height)]
-        if all(pix == trim_color_rgb for pix in column):
-            right -= 1
-        else:
-            break
+        left = max(left - margin, 0)
+        top = max(top - margin, 0)
+        right = min(right + margin, width - 1)
+        bottom = min(bottom + margin, height - 1)
 
-    while bottom > top:
-        row = [image.getpixel((x, bottom)) for x in range(width)]
-        if all(pix == trim_color_rgb for pix in row):
-            bottom -= 1
-        else:
-            break
-
-    left = max(left - margin, 0)
-    top = max(top - margin, 0)
-    right = min(right + margin, width - 1)
-    bottom = min(bottom + margin, height - 1)
-
-    return image.crop((left, top, right, bottom))
-    # img.save(image_path)
+        return image.crop((left, top, right, bottom))
 
 
 @typing
@@ -459,30 +441,6 @@ def ditto(update: Update, context: CallbackContext) -> None:
 
     if not message:
         return
-
-    with (
-        sync_playwright() as playwright,
-        TemporaryDirectory() as tmpdir,
-    ):
-        chromium = playwright.chromium
-        browser = chromium.launch()
-        context = browser.new_context(
-            viewport={
-                "width": 1600,
-                "height": 0,
-            },
-            device_scale_factor=2,
-        )
-
-        page = context.new_page()
-
-        page.goto(f"file://{os.path.abspath('assets/ditto/index.html')}")
-        screenshot_path = "screenshot.png"
-        page.screenshot(path=screenshot_path, full_page=True)
-
-        trim(screenshot_path)
-
-        message.reply_photo(photo=open(screenshot_path, "rb"))
 
 
 def error_handler(update: object, context: CallbackContext) -> None:
@@ -557,12 +515,9 @@ def error_handler(update: object, context: CallbackContext) -> None:
 
 @app.get("/get")
 def index() -> Response:
-    with open("assets/ditto/index.html", "rt") as f:
-        html = f.read()
-
     with (
+        open("assets/ditto/index.html", "rt") as html,
         sync_playwright() as playwright,
-        TemporaryDirectory() as tmpdir,
     ):
         chromium = playwright.chromium
         browser = chromium.launch()
@@ -576,8 +531,26 @@ def index() -> Response:
 
         page = context.new_page()
 
-        # page.goto(html)
-        page.set_content(html)
+        context = {
+            "messages": [
+                {
+                    "avatar": "https://github.com/skhaz.png",
+                    "name": "Rodrigo",
+                    "role": "admin",
+                    "content": "Piroca",
+                },
+                {
+                    "avatar": "https://github.com/walac.png",
+                    "name": "Wander",
+                    "role": "admin",
+                    "content": "Finalmente sai da bolsa!",
+                },
+            ]
+        }
+
+        environment = jinja2.Environment()
+        template = environment.from_string(html.read())
+        page.set_content(template.render(context))
 
         data = trim(page.screenshot())
         # screenshot_path = "screenshot.png"
