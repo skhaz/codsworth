@@ -13,7 +13,7 @@ FROM base
 
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
-RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2 && playwright install chromium
+RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2 && playwright install
 COPY . .
 
 ARG PORT=8000
