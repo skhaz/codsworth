@@ -12,6 +12,7 @@ from random import random
 from typing import Union
 
 import jinja2
+import numpy as np
 import openai
 import PIL.Image
 import yaml
@@ -389,49 +390,64 @@ def image(update: Update, context: CallbackContext) -> None:
         pass
 
 
+# def trim(buffer, margin=32, trim_color="#92b88a"):
+#     with PIL.Image.open(io.BytesIO(buffer)).convert("RGB") as image:
+#         width, height = image.size
+
+#         left, top, right, bottom = 0, 0, width - 1, height - 1
+
+#         trim_color_rgb = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
+
+#         while left < width:
+#             column = [image.getpixel((left, y)) for y in range(height)]
+#             if all(pix == trim_color_rgb for pix in column):
+#                 left += 1
+#             else:
+#                 break
+
+#         while top < height:
+#             row = [image.getpixel((x, top)) for x in range(width)]
+#             if all(pix == trim_color_rgb for pix in row):
+#                 top += 1
+#             else:
+#                 break
+
+#         while right > left:
+#             column = [image.getpixel((right, y)) for y in range(height)]
+#             if all(pix == trim_color_rgb for pix in column):
+#                 right -= 1
+#             else:
+#                 break
+
+#         while bottom > top:
+#             row = [image.getpixel((x, bottom)) for x in range(width)]
+#             if all(pix == trim_color_rgb for pix in row):
+#                 bottom -= 1
+#             else:
+#                 break
+
+#         left = max(left - margin, 0)
+#         top = max(top - margin, 0)
+#         right = min(right + margin, width - 1)
+#         bottom = min(bottom + margin, height - 1)
+
+#         return image.crop((left, top, right, bottom))
+
+
 def trim(buffer, margin=32, trim_color="#92b88a"):
     with PIL.Image.open(io.BytesIO(buffer)).convert("RGB") as image:
-        return image
-        width, height = image.size
-
-        left, top, right, bottom = 0, 0, width - 1, height - 1
-
+        data = np.array(image)
         trim_color_rgb = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
 
-        while left < width:
-            column = [image.getpixel((left, y)) for y in range(height)]
-            if all(pix == trim_color_rgb for pix in column):
-                left += 1
-            else:
-                break
+        non_trim_rows = np.where(np.any(data != trim_color_rgb, axis=(1, 2)))[0]
+        non_trim_cols = np.where(np.any(data != trim_color_rgb, axis=(0, 2)))[0]
 
-        while top < height:
-            row = [image.getpixel((x, top)) for x in range(width)]
-            if all(pix == trim_color_rgb for pix in row):
-                top += 1
-            else:
-                break
+        left = max(0, non_trim_cols[0] - margin)
+        top = max(0, non_trim_rows[0] - margin)
+        right = min(data.shape[1] - 1, non_trim_cols[-1] + margin)
+        bottom = min(data.shape[0] - 1, non_trim_rows[-1] + margin)
 
-        while right > left:
-            column = [image.getpixel((right, y)) for y in range(height)]
-            if all(pix == trim_color_rgb for pix in column):
-                right -= 1
-            else:
-                break
-
-        while bottom > top:
-            row = [image.getpixel((x, bottom)) for x in range(width)]
-            if all(pix == trim_color_rgb for pix in row):
-                bottom -= 1
-            else:
-                break
-
-        left = max(left - margin, 0)
-        top = max(top - margin, 0)
-        right = min(right + margin, width - 1)
-        bottom = min(bottom + margin, height - 1)
-
-        return image.crop((left, top, right, bottom))
+        return PIL.Image.fromarray(data[top:bottom, left:right])
 
 
 @typing
