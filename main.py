@@ -436,7 +436,16 @@ def ditto(update: Update, _: CallbackContext) -> None:
     if not entities:
         return
 
-    print(">>> json entities", json.dumps(entities))
+    for entity in entities:
+        if entity.type != "mention":
+            continue
+
+        user = entity.user
+
+        if not user:
+            continue
+
+        print(">>> user", user.id, user.name)
 
     message.reply_text(text)
 
