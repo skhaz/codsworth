@@ -403,10 +403,10 @@ def image(update: Update, context: CallbackContext) -> None:
         pass
 
 
-def trim(buffer, margin=32, trim_color="#92b88a"):
+def trim(buffer, margin=32, color="#92b88a"):
     with PIL.Image.open(io.BytesIO(buffer)).convert("RGB") as image:
         data = np.array(image)
-        trim = tuple(int(trim_color[i : i + 2], 16) for i in (1, 3, 5))
+        trim = tuple(int(color[i : i + 2], 16) for i in (1, 3, 5))
 
         non_trim_rows = np.where(np.any(data != trim, axis=(1, 2)))[0]
         non_trim_cols = np.where(np.any(data != trim, axis=(0, 2)))[0]
@@ -420,11 +420,19 @@ def trim(buffer, margin=32, trim_color="#92b88a"):
 
 
 @typing
-def ditto(update: Update, context: CallbackContext) -> None:
+def ditto(update: Update, _: CallbackContext) -> None:
     message = update.message
 
     if not message:
         return
+
+    text = message.text
+    if not text:
+        return
+
+    message.reply_text(text)
+
+    return
 
     with (
         open("assets/ditto/index.html", "rt") as html,
@@ -483,7 +491,7 @@ def ditto(update: Update, context: CallbackContext) -> None:
             device_scale_factor=2,
         ).new_page()
 
-        c = {
+        context = {
             "messages": [
                 {
                     "avatar": "https://github.com/skhaz.png",
@@ -502,7 +510,7 @@ def ditto(update: Update, context: CallbackContext) -> None:
 
         environment = jinja2.Environment()
         template = environment.from_string(html.read())
-        page.set_content(template.render(c))
+        page.set_content(template.render(context))
 
         data = trim(page.screenshot())
 
