@@ -1,5 +1,6 @@
 import functools
 import io
+import json
 import mimetypes
 import os
 import re
@@ -430,8 +431,12 @@ def ditto(update: Update, _: CallbackContext) -> None:
     if not text:
         return
 
-    print(">>> entities", message.entities)
-    print(">>> text", text)
+    entities = message.parse_entities()
+
+    if not entities:
+        return
+
+    print(">>> json entities", json.dumps(entities))
 
     message.reply_text(text)
 
