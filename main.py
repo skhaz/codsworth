@@ -65,7 +65,6 @@ replies = memes["replies"]
 slaps = memes["slaps"]
 welcome = memes["welcome"]
 helps = memes["helps"]
-penis = memes["penis"]
 porn = memes["porn"]
 
 likelihoods = tuple(memes["likelihoods"])
