@@ -438,10 +438,11 @@ def ditto(update: Update, _: CallbackContext) -> None:
 
     for entity in entities:
         print(">>> entity", entity.type, entity.offset, entity.length)
-        if entity.type not in {"mention", "text_mention"}:
+        if entity.type != "text_mention":
             continue
 
         user = entity.user
+        # entity_text = text[entity.offset : entity.offset + entity.length]
 
         if not user:
             print(">>> user not found")
