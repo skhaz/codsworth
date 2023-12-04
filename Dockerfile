@@ -19,8 +19,7 @@ RUN playwright install chromium
 RUN playwright install-deps chromium
 
 WORKDIR /opt/app
-RUN apt-get update && apt-get install --yes --no-install-recommends sed mime-support libjemalloc2
-# ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+RUN apt-get install --yes --no-install-recommends sed mime-support
 COPY . .
 
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
