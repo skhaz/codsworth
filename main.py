@@ -26,6 +26,7 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
+from openai import BadRequestError
 from openai import OpenAI
 from playwright.sync_api import sync_playwright
 from redis import ConnectionPool
@@ -392,7 +393,7 @@ def image(update: Update, context: CallbackContext) -> None:
         ):
             response = openai.image.create(prompt=prompt, size="512x512")
             message.reply_photo(photo=response["data"][0]["url"])
-    except openai.BadRequestError:
+    except BadRequestError:
         mention = mention_html(
             user_id=message.from_user.id,
             name=message.from_user.name,
