@@ -17,7 +17,6 @@ from typing import Union
 
 import jinja2
 import numpy as np
-import openai
 import PIL.Image
 import sentry_sdk
 import yaml
@@ -27,6 +26,7 @@ from flask import request
 from fuzzywuzzy import fuzz
 from google.cloud.vision import Image
 from google.cloud.vision import ImageAnnotatorClient
+from openai import OpenAI
 from playwright.sync_api import sync_playwright
 from redis import ConnectionPool
 from redis import Redis
@@ -51,8 +51,7 @@ vision = ImageAnnotatorClient()
 redis_pool = ConnectionPool.from_url(os.environ["REDIS_DSN"])
 redis = Redis(connection_pool=redis_pool)
 
-# openai.api_key = os.environ["OPENAI_API_KEY"]
-# openai = OpenAI(os.environ["OPENAI_API_KEY"])
+openai = OpenAI()
 
 mimetypes.init()
 
@@ -358,7 +357,7 @@ def prompt(update: Update, context: CallbackContext) -> None:
             expire=60 * 5,
         ):
             message.reply_text(
-                openai.Completion.create(
+                openai.completions.create(
                     prompt=prompt,
                     model="gpt-3.5-turbo-instruct",
                     max_tokens=3000,
@@ -391,9 +390,9 @@ def image(update: Update, context: CallbackContext) -> None:
             max_requests=1,
             expire=60 * 5,
         ):
-            response = openai.Image.create(prompt=prompt, size="512x512")
+            response = openai.image.create(prompt=prompt, size="512x512")
             message.reply_photo(photo=response["data"][0]["url"])
-    except openai.InvalidRequestError:
+    except openai.BadRequestError:
         mention = mention_html(
             user_id=message.from_user.id,
             name=message.from_user.name,
