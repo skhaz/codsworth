@@ -51,7 +51,8 @@ vision = ImageAnnotatorClient()
 redis_pool = ConnectionPool.from_url(os.environ["REDIS_DSN"])
 redis = Redis(connection_pool=redis_pool)
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+# openai.api_key = os.environ["OPENAI_API_KEY"]
+# openai = OpenAI(os.environ["OPENAI_API_KEY"])
 
 mimetypes.init()
 
@@ -325,7 +326,7 @@ def reply(update: Update, context: CallbackContext) -> None:
             expire=60 * 5,
         ):
             reply_to.reply_text(
-                openai.ChatCompletion.create(
+                openai.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=messages,
                 )
