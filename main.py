@@ -437,12 +437,14 @@ def ditto(update: Update, _: CallbackContext) -> None:
         return
 
     for entity in entities:
+        print(">>> entity", entity.type, entity.offset, entity.length)
         if entity.type != "mention":
             continue
 
         user = entity.user
 
         if not user:
+            print(">>> user not found")
             continue
 
         print(">>> user", user.id, user.name)
