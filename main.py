@@ -430,6 +430,8 @@ def ditto(update: Update, _: CallbackContext) -> None:
     if not text:
         return
 
+    print(">>>", text)
+
     message.reply_text(text)
 
     return
