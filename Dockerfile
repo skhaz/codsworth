@@ -11,7 +11,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --requirement requirements.txt
 
 FROM base
-
 WORKDIR /opt
 ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
 COPY --from=builder /opt/venv /opt/venv
