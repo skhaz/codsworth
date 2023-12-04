@@ -391,7 +391,7 @@ def image(update: Update, context: CallbackContext) -> None:
             max_requests=1,
             expire=60 * 5,
         ):
-            response = openai.image.create(prompt=prompt, size="512x512")
+            response = openai.images.generate(prompt=prompt, size="512x512")
             message.reply_photo(photo=response["data"][0]["url"])
     except BadRequestError:
         mention = mention_html(
