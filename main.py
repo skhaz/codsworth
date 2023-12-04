@@ -438,7 +438,7 @@ def ditto(update: Update, _: CallbackContext) -> None:
 
     for entity in entities:
         print(">>> entity", entity.type, entity.offset, entity.length)
-        if entity.type != "text_mention":
+        if entity.type not in ["mention", "text_mention"]:
             continue
 
         user = entity.user
