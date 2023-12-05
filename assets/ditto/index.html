@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bubblegam</title>
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      background: #92b88a;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .chat {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .message_wrapper {
+      --msg-size: 16px;
+      --msg-size: 10px;
+
+      max-width: 800px;
+
+      display: flex;
+      gap: 10px;
+      align-items: end;
+      width: 100%;
+      font-size: var(--msg-size);
+
+      margin: var(--msg-size) 0;
+    }
+
+    .message_wrapper,
+    .message_wrapper * {
+      box-sizing: border-box;
+    }
+
+    .profile_image {
+      border-radius: 100%;
+      overflow: hidden;
+      width: calc(var(--msg-size) * 5);
+      height: calc(var(--msg-size) * 5);
+      cursor: pointer;
+    }
+
+    .profile_image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .text_padding {
+      max-width: calc(100% - 10px - var(--msg-size) * 5);
+    }
+
+    .text_wrapper {
+      background-color: white;
+      padding: var(--msg-size) calc(var(--msg-size) * 1.5);
+      border-radius: calc(var(--msg-size) * 2);
+    }
+
+    .sender {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .role {
+      color: #999999;
+      font-size: 1.2em;
+    }
+
+    .username {
+      color: #955cdb;
+      font-weight: 500;
+      font-size: 1.4em;
+
+      cursor: pointer;
+    }
+
+    .message {
+      font-size: 1.5em;
+      font-weight: 500;
+      padding: 5px 0;
+    }
+
+    .message_footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+    }
+
+    .react_user {
+      width: calc(var(--msg-size) * 2.8);
+      height: calc(var(--msg-size) * 2.8);
+      background: rgb(223, 156, 242);
+      background: linear-gradient(180deg,
+          rgba(223, 156, 242, 1) 0%,
+          rgba(214, 105, 237, 1) 100%);
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.8em;
+      padding-bottom: calc(var(--msg-size) / 4);
+    }
+
+    .react_emoju {
+      font-size: 1.6em;
+      padding-bottom: calc(var(--msg-size) / 4);
+    }
+
+    .react_wrapper {
+      display: flex;
+      background-color: #ebf2fa;
+      padding: 7px;
+      border-radius: 100px;
+      align-items: center;
+      padding-left: 20px;
+      gap: 10px;
+    }
+
+    .forward {
+      display: flex;
+      align-items: end;
+      gap: 5px;
+    }
+
+    .share_icon {
+      display: inline-block;
+    }
+
+    .share_icon img {
+      width: calc(var(--msg-size) * 1.8);
+      padding-bottom: 2px;
+    }
+
+    .information_wrapper {
+      display: flex;
+      align-items: end;
+      color: #999999;
+      font-size: 1.3em;
+      font-style: italic;
+      gap: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chat">
+
+    {% for message in messages %}
+    <div class="message_wrapper">
+      <div class="profile_image">
+        <img src="{{ message.avatar }}" alt="">
+      </div>
+      <div class="text_padding">
+        <div class="text_wrapper">
+          <div class="sender">
+            <div class="username">{{ message.name }}</div>
+            <div class="role">{{ message.role }}</div>
+          </div>
+          <div class="message">{{ message.content }}</div>
+          <div class="message_footer">
+            <div class="react_pa">
+              <div class="react_wrapper">
+                <div class="react_emoji">😱</div>
+                <div class="react_user">s</div>
+              </div>
+            </div>
+            <div class="message_information">
+              <div class="information_wrapper">
+                <div class="forward">
+                  <span class="share_icon">
+                    <img src="assets/share.png" alt="">
+                  </span>
+                  4
+                </div>
+                <div class="sn_ti">16:16</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</body>
+
+</html>

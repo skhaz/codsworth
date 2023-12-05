@@ -1,0 +1,94 @@
+name: Deploy on Google Cloud Platform
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Authenticate Docker
+        run: gcloud auth configure-docker --quiet ${{ secrets.REGION }}-docker.pkg.dev
+
+      - name: Build And Push Telegram Service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.REGISTRY }}/${{ secrets.SERVICE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy Telegram Service to Cloud Run
+        env:
+          SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+          REGION: ${{ secrets.REGION }}
+          REGISTRY: ${{ secrets.REGISTRY }}
+          GITHUB_SHA: ${{ github.sha }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_SECRET: ${{ secrets.TELEGRAM_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          cat <<EOF | envsubst > service.yaml
+          apiVersion: serving.knative.dev/v1
+          kind: Service
+          metadata:
+            name: "$SERVICE_NAME"
+            labels:
+              cloud.googleapis.com/location: "$REGION"
+          spec:
+            template:
+              metadata:
+                annotations:
+                  run.googleapis.com/execution-environment: "gen2"
+                  run.googleapis.com/startup-cpu-boost: "true"
+                  run.googleapis.com/cpu-throttling: "true"
+                  autoscaling.knative.dev/maxScale: "8"
+              spec:
+                containerConcurrency: "8"
+                timeoutSeconds: "600"
+                containers:
+                  - image: "$REGISTRY/$SERVICE_NAME:$GITHUB_SHA"
+                    name: "$SERVICE_NAME"
+                    resources:
+                      limits:
+                        cpu: "4000m"
+                        memory: "4Gi"
+                    env:
+                      - name: TELEGRAM_TOKEN
+                        value: "$TELEGRAM_TOKEN"
+                      - name: TELEGRAM_SECRET
+                        value: "$TELEGRAM_SECRET"
+                      - name: OPENAI_API_KEY
+                        value: "$OPENAI_API_KEY"
+          EOF
+
+          gcloud run services replace service.yaml
+          rm -f service.yaml
+
+      # - name: Set Up Telegram Webhook
+      #   env:
+      #     GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      #     TELEGRAM_SERVICE_NAME: ${{ secrets.TELEGRAM_SERVICE_NAME }}
+      #     TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+      #     SECRET: ${{ secrets.SECRET }}
+      #   run: |
+      #     curl "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=$(gcloud run services describe ${TELEGRAM_SERVICE_NAME} --format 'value(status.url)' --project ${GCP_PROJECT_ID})&secret_token=${SECRET}"
