@@ -3,6 +3,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
 
+from ditto import Message
 from ditto import ditto
 
 # from telegram import Update
@@ -14,8 +15,12 @@ from ditto import ditto
 
 
 async def test(request: Request):
-    image = await ditto()
-    return Response(content=image, media_type="image/png")
+    messages = [
+        Message(author="skhaz", content="bar", role="admin", emoji="👍", react="a", time="1:00"),
+        Message(author="modelonulo", content="qux", role="xpto", emoji="👎", react="s", time="2:00"),
+    ]
+
+    return Response(content=await ditto(messages=messages), media_type="image/png")
 
 
 # def equals(left: str | None, right: str | None) -> bool:

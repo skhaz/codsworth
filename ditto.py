@@ -1,11 +1,40 @@
 import asyncio
 import io
+from collections import defaultdict
+from dataclasses import dataclass
+from typing import List
 
 import aiofiles
+import httpx
 import jinja2
 import numpy as np
 import PIL.Image
 from playwright.async_api import async_playwright
+
+
+@dataclass
+class Message:
+    author: str
+    content: str
+    role: str
+    emoji: str
+    react: str
+    time: str
+
+
+async def fetch(message: Message, client: httpx.AsyncClient):
+    response = await client.get(f"https://api.github.com/users/{message.author}")
+    response.raise_for_status()
+    data = response.json()
+    return {
+        "avatar": data["avatar_url"],
+        "name": data["name"],
+        "content": message.content,
+        "role": message.role,
+        "emoji": message.emoji,
+        "react": message.react,
+        "time": message.time,
+    }
 
 
 def trim(buffer, margin=32, color="#92b88a"):
@@ -24,7 +53,7 @@ def trim(buffer, margin=32, color="#92b88a"):
         return PIL.Image.fromarray(data[top:bottom, left:right])
 
 
-async def ditto() -> bytes | None:
+async def ditto(messages: List[Message]) -> bytes | None:
     async with (
         aiofiles.open("assets/ditto/index.html", "rt") as html,
         async_playwright() as playwright,
@@ -74,7 +103,7 @@ async def ditto() -> bytes | None:
             ],
         )
 
-        context = await browser.new_context(
+        browser_context = await browser.new_context(
             viewport={
                 "width": 1600,
                 "height": 1200,
@@ -82,24 +111,15 @@ async def ditto() -> bytes | None:
             device_scale_factor=2,
         )
 
-        page = await context.new_page()
+        page = await browser_context.new_page()
 
-        context = {
-            "messages": [
-                {
-                    "avatar": "https://github.com/skhaz.png",
-                    "name": "Rodrigo",
-                    "role": "admin",
-                    "content": "Piroca",
-                },
-                {
-                    "avatar": "https://github.com/walac.png",
-                    "name": "Wander",
-                    "role": "admin",
-                    "content": "Finalmente sai da bolsa!",
-                },
-            ]
-        }
+        context = defaultdict(list)
+
+        async with httpx.AsyncClient() as client:
+            tasks = [fetch(message, client) for message in messages]
+            results = await asyncio.gather(*tasks)
+
+        context["messages"] = results
 
         environment = jinja2.Environment()
         template = environment.from_string(await html.read())
@@ -110,7 +130,7 @@ async def ditto() -> bytes | None:
         coro = asyncio.to_thread(trim, screenshot)
 
         try:
-            result = await asyncio.wait_for(coro, timeout=30)
+            result = await asyncio.wait_for(coro, timeout=10)
         except asyncio.TimeoutError:
             return None
 

@@ -172,8 +172,8 @@
           <div class="message_footer">
             <div class="react_pa">
               <div class="react_wrapper">
-                <div class="react_emoji">😱</div>
-                <div class="react_user">s</div>
+                <div class="react_emoji">{{ message.emoji }}</div>
+                <div class="react_user">{{ message.react }}</div>
               </div>
             </div>
             <div class="message_information">
@@ -184,7 +184,7 @@
                   </span>
                   4
                 </div>
-                <div class="sn_ti">16:16</div>
+                <div class="time">{{ message.time }}</div>
               </div>
             </div>
           </div>

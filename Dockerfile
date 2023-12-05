@@ -4,6 +4,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PATH=/opt/venv/bin:$PATH
+ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
 
 FROM base AS builder
 WORKDIR /opt/venv
@@ -13,7 +14,6 @@ RUN pip install --no-cache-dir --requirement requirements.txt
 
 FROM base
 WORKDIR /opt/app
-ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
 COPY --from=builder /opt/venv /opt/venv
 COPY . .
 RUN playwright install chromium
