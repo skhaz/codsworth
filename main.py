@@ -1,8 +1,9 @@
-from .ditto import ditto
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
+
+from .ditto import ditto
 
 # from telegram import Update
 # from telegram.ext import Application
