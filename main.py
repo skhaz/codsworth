@@ -1,4 +1,4 @@
-from app.ditto import ditto
+from .ditto import ditto
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import Response
@@ -13,8 +13,8 @@ from starlette.routing import Route
 
 
 async def test(request: Request):
-    async with ditto() as image:
-        return Response(content=image, media_type="image/png")
+    image = await ditto()
+    return Response(content=image, media_type="image/png")
 
 
 # def equals(left: str | None, right: str | None) -> bool:

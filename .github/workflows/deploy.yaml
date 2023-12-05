@@ -17,7 +17,7 @@ jobs:
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
 
-      - name: Set up Google Cloud SDK
+      - name: Set up Google Cloud
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.PROJECT_ID }}
@@ -28,7 +28,7 @@ jobs:
       - name: Authenticate Docker
         run: gcloud auth configure-docker --quiet ${{ secrets.REGION }}-docker.pkg.dev
 
-      - name: Build And Push Telegram Service
+      - name: Build And Push
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -37,7 +37,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Deploy Telegram Service to Cloud Run
+      - name: Deploy to Cloud Run
         env:
           SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
           REGION: ${{ secrets.REGION }}
