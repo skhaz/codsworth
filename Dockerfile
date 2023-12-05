@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir --requirement requirements.txt
 
 FROM base
 WORKDIR /opt/app
+ENV PLAYWRIGHT_BROWSERS_PATH /opt/playwright
 COPY --from=builder /opt/venv /opt/venv
 COPY . .
 RUN playwright install chromium
@@ -21,4 +22,4 @@ RUN playwright install-deps chromium
 RUN useradd -r user
 USER user
 
-CMD exec uvicorn main:app --host 0.0.0.0 --port $PORT --workers 8 --timeout-keep-alive 600 --timeout-graceful-shutdown 600
+CMD exec uvicorn main:app --host 0.0.0.0 --port $PORT --workers 4 --timeout-keep-alive 600 --timeout-graceful-shutdown 600
