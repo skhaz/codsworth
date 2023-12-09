@@ -4,6 +4,8 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import List
 
+import string
+import random
 import aiofiles
 import httpx
 import jinja2
@@ -20,6 +22,35 @@ class Message:
     emoji: str
     react: str
     time: str
+
+
+def parse(text: str) -> List[Message]:
+    messages = []
+
+    roles = ["admin"]
+    emojis = ["👎", "🌚", "🍆"]
+    reacts = string.ascii_lowercase
+
+    for line in text.splitlines():
+        line = line.strip()
+
+        if not line:
+            continue
+
+        if line.startswith("@"):
+            author, content = line.split(" ", 1)
+            messages.append(
+                Message(
+                    author=author.lstrip("@"),
+                    content=content,
+                    role=random.choice(roles),
+                    emoji=random.choice(emojis),
+                    react=random.choice(reacts),
+                    time=None,
+                )
+            )
+
+    return messages
 
 
 async def fetch(message: Message, client: httpx.AsyncClient):

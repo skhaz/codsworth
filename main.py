@@ -2,9 +2,10 @@ from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
-
+import string
 from ditto import Message
 from ditto import ditto
+from ditto import parse
 
 # from telegram import Update
 # from telegram.ext import Application
@@ -15,12 +16,43 @@ from ditto import ditto
 
 
 async def test(request: Request):
-    messages = [
-        Message(author="skhaz", content="bar", role="admin", emoji="👍", react="a", time="1:00"),
-        Message(author="modelonulo", content="qux", role="xpto", emoji="👎", react="s", time="2:00"),
-    ]
+    text = """
+    @skhaz I need food.
+    @modelonulo I need food too.
+    """
+
+    messages = parse(text)
+
+    if not messages:
+        # return
+        return Response(content="No messages found", status_code=400)
 
     return Response(content=await ditto(messages=messages), media_type="image/png")
+
+
+# roles = ["admin"]
+# emojis = ["👎", "🌚", "🍆"]
+# reactions = string.ascii_lowercase
+# messages = [
+#     Message(
+#         author="skhaz",
+#         content="bar",
+#         role="admin",
+#         emoji="👍",
+#         react="a",
+#         time="1:00",
+#     ),
+#     Message(
+#         author="modelonulo",
+#         content="qux",
+#         role="xpto",
+#         emoji="👎",
+#         react="s",
+#         time="2:00",
+#     ),
+# ]
+
+# return Response(content=await ditto(messages=messages), media_type="image/png")
 
 
 # def equals(left: str | None, right: str | None) -> bool:
