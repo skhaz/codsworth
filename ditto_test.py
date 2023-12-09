@@ -16,7 +16,7 @@ def test_parse():
     assert messages[1].content == "I need food too."
 
 
-def test_parse_quote():
+def test_parse_mention():
     text = """
     @skhaz I love you @modelonulo
     """
