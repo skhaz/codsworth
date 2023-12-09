@@ -1,8 +1,8 @@
 [tool.black]
 line-length = 88
-target-version = ['py312']
+target-version = ['py311']
 
 [tool.isort]
-py_version = 312
+py_version = 311
 force_single_line = true
 line_length = 88
